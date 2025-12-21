@@ -213,7 +213,7 @@ export function HabitsScreen() {
             style={styles.container}
         >
             <StatusBar
-                backgroundColor="#8d6e63"
+                backgroundColor="#5d4037"
                 barStyle="light-content"
             />
             <SafeAreaView style={styles.safeArea}>

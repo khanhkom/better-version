@@ -78,7 +78,7 @@ export function FarmGameScreen() {
 
     return (
         <LinearGradient
-            colors={['#2d5a27', '#3a7332']}
+            colors={['#8d6e63', '#8d6e63']}
             style={styles.container}
         >
             <SafeAreaView style={styles.safeArea}>

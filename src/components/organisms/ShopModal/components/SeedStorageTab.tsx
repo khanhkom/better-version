@@ -3,12 +3,12 @@
  * Seed storage tab for viewing owned seeds
  */
 
-import type { Inventory } from '@/types/game';
+import type { Crop, Inventory } from '@/types/game';
 
-import { FlatList } from 'react-native';
+import { useState } from 'react';
+import { Pressable, ScrollView } from 'react-native';
 
 import Box from '@/components/atoms/Box';
-import Card from '@/components/atoms/Card';
 import { Emoji } from '@/components/atoms/Emoji';
 import Text from '@/components/atoms/Text';
 
@@ -23,6 +23,9 @@ type SeedStorageTabProps = {
 export function SeedStorageTab({ inventory }: SeedStorageTabProps) {
   const crops = Object.values(CROPS);
   const ownedSeeds = crops.filter((crop) => inventory[crop.id] > 0);
+  const [selectedCrop, setSelectedCrop] = useState<Crop | null>(
+    ownedSeeds[0] || null
+  );
 
   if (ownedSeeds.length === 0) {
     return (
@@ -37,40 +40,91 @@ export function SeedStorageTab({ inventory }: SeedStorageTabProps) {
     );
   }
 
-  return (
-    <FlatList
-      data={ownedSeeds}
-      keyExtractor={(item) => item.id}
-      numColumns={2}
-      renderItem={({ item }) => {
-        const count = inventory[item.id];
+  const handleSelectCrop = (crop: Crop) => {
+    setSelectedCrop(crop);
+  };
 
-        return (
-          <Box style={{ margin: '1%', width: '48%' }}>
-            <Card
-              alignItems="center"
-              backgroundColor="farmCardBgLight"
-              borderColor="farmBorder"
-              borderRadius="m"
-              borderWidth={2}
-              padding="m"
-            >
-              <Emoji size={40} symbol={item.icon} />
-              <Text fontSize={12} fontWeight="600" mt="xs" textAlign="center">
-                {item.name}
-              </Text>
-              <Text color="success" fontSize={11} fontWeight="700" mt="xs">
-                {count} seeds
-              </Text>
-              <Text color="textSecondary" fontSize={10} mt="xs">
-                Growth: {Math.floor(item.growthTime / SECONDS_PER_HOUR)}h
-              </Text>
-            </Card>
-          </Box>
-        );
-      }}
-      showsVerticalScrollIndicator={false}
-      style={{ maxHeight: 400 }}
-    />
+  const count = selectedCrop ? inventory[selectedCrop.id] : 0;
+
+  return (
+    <Box
+      backgroundColor="farmCardBgLight"
+      borderColor="farmBorder"
+      borderRadius="m"
+      borderWidth={2}
+      gap="l"
+      padding="m"
+    >
+      {/* Icon Grid */}
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        style={{ maxHeight: 120, minHeight: 120 }}
+      >
+        <Box flexDirection="row" flexWrap="wrap" gap="m" width={350}>
+          {ownedSeeds.map((crop) => {
+            const isSelected = selectedCrop?.id === crop.id;
+
+            return (
+              <Pressable
+                key={crop.id}
+                onPress={() => { handleSelectCrop(crop); }}
+              >
+                <Box
+                  alignItems="center"
+                  backgroundColor={isSelected ? 'farmCardBgLight' : 'cardBg'}
+                  borderColor={isSelected ? 'farmBorder' : 'borderDefault'}
+                  borderRadius="m"
+                  borderWidth={isSelected ? 3 : 2}
+                  height={56}
+                  justifyContent="center"
+                  position="relative"
+                  width={56}
+                >
+                  <Emoji size={40} symbol={crop.icon} />
+                  {inventory[crop.id] > 0 && (
+                    <Box
+                      alignItems="center"
+                      backgroundColor="success"
+                      borderRadius="full"
+                      bottom={-4}
+                      height={18}
+                      justifyContent="center"
+                      position="absolute"
+                      right={-4}
+                      width={18}
+                    >
+                      <Text color="white" fontSize={10} fontWeight="700">
+                        {inventory[crop.id]}
+                      </Text>
+                    </Box>
+                  )}
+                </Box>
+              </Pressable>
+            );
+          })}
+        </Box>
+      </ScrollView>
+
+      {/* Selected Item Details */}
+      {selectedCrop ? <Box
+
+      >
+        <Text fontSize={16} fontWeight="700" mb="s">
+          {selectedCrop.name}
+        </Text>
+        <Box gap="xs">
+          <Text color="textSecondary" fontSize={12}>
+            Số lượng: <Text color="success" fontWeight="700">{count}</Text> hạt giống
+          </Text>
+          <Text color="textSecondary" fontSize={12}>
+            Thời gian trồng: <Text fontWeight="700">{Math.floor(selectedCrop.growthTime / SECONDS_PER_HOUR)}h</Text>
+          </Text>
+          <Text color="textSecondary" fontSize={12}>
+            Cấp độ: <Text fontWeight="700">{selectedCrop.level}</Text>
+          </Text>
+        </Box>
+      </Box> : null}
+    </Box>
   );
 }

@@ -32,6 +32,7 @@ export function TabBar({ activeTab, onTabChange, tabs }: TabBarProps) {
               borderColor="farmBorder"
               borderRadius="m"
               borderWidth={isActive ? 2 : 1}
+              fontSize={12}
               onPress={() => { onTabChange(tab.id); }}
               paddingHorizontal="s"
               paddingVertical="s"

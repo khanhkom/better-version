@@ -3,18 +3,20 @@
  * Seeds shop tab for buying seeds
  */
 
-import type { CropId } from '@/types/game';
+import type { Crop, CropId } from '@/types/game';
 
-import { FlatList, Pressable } from 'react-native';
+import { useState } from 'react';
+import { Pressable, ScrollView, View } from 'react-native';
 
 import Box from '@/components/atoms/Box';
-import Card from '@/components/atoms/Card';
+import Button from '@/components/atoms/Button';
 import { Emoji } from '@/components/atoms/Emoji';
 import Text from '@/components/atoms/Text';
 
 import { CROPS } from '@/constants/game';
 
 const DISABLED_OPACITY = 0.5;
+const SECONDS_PER_HOUR = 3600;
 
 type SeedsTabProps = {
   readonly money: number;
@@ -23,47 +25,102 @@ type SeedsTabProps = {
 
 export function SeedsTab({ money, onBuySeed }: SeedsTabProps) {
   const crops = Object.values(CROPS);
+  const [selectedCrop, setSelectedCrop] = useState<Crop | null>(crops[0] || null);
+
+  const handleSelectCrop = (crop: Crop) => {
+    setSelectedCrop(crop);
+  };
+
+  const handleBuy = () => {
+    if (selectedCrop && money >= selectedCrop.buyPrice) {
+      onBuySeed(selectedCrop.id);
+    }
+  };
+
+  const canAfford = selectedCrop ? money >= selectedCrop.buyPrice : false;
+  const profit = selectedCrop ? selectedCrop.sellPrice - selectedCrop.buyPrice : 0;
+  const growthHours = selectedCrop ? Math.floor(selectedCrop.growthTime / SECONDS_PER_HOUR) : 0;
 
   return (
-    <FlatList
-      data={crops}
-      keyExtractor={(item) => item.id}
-      numColumns={2}
-      renderItem={({ item }) => {
-        const canAfford = money >= item.buyPrice;
-        return (
-          <Pressable
+    <Box backgroundColor="farmCardBgLight"
+      borderColor="farmBorder"
+      borderRadius="m"
+      borderWidth={2}
+      gap="l"
+      padding="m"
+
+    >
+      {/* Icon Grid */}
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        style={{ maxHeight: 120, minHeight: 120 }}
+      >
+        <Box flexDirection="row" flexWrap="wrap" gap="m" width={350}>
+          {crops.map((crop) => {
+            const isSelected = selectedCrop?.id === crop.id;
+            const isAffordable = money >= crop.buyPrice;
+
+            return (
+              <Pressable
+                key={crop.id}
+                onPress={() => { handleSelectCrop(crop); }}
+              >
+                <Box
+                  alignItems="center"
+                  backgroundColor={isSelected ? 'farmCardBgLight' : 'farmCardBgLight'}
+                  borderColor={isSelected ? 'farmBorder' : 'farmCardBgLight'}
+                  borderRadius="m"
+                  borderWidth={isSelected ? 3 : 2}
+                  height={56}
+                  justifyContent="center"
+                  opacity={isAffordable ? 1 : DISABLED_OPACITY}
+                  width={56}
+                >
+                  <Emoji size={40} symbol={crop.icon} />
+                </Box>
+              </Pressable>
+            );
+          })}
+        </Box>
+      </ScrollView>
+
+      {/* Selected Item Details */}
+      <Box backgroundColor='farmBorder' height={1} />
+      {selectedCrop ? <Box
+        borderRadius="m"
+        flexDirection="row"
+        justifyContent="space-between"
+      >
+        <View>
+          <Text color='textMuted' fontSize={16} fontWeight="700" mb="s">
+            {selectedCrop.name}
+          </Text>
+          <Box gap="xxs">
+            <Text color="textMuted" fontSize={12}>
+              Giá mua: <Text color="highlightYellow" fontWeight="700">{selectedCrop.buyPrice}</Text> 💰
+            </Text>
+            <Text color="textMuted" fontSize={12}>
+              Thời gian: <Text fontWeight="700">{growthHours}h</Text>
+            </Text>
+            <Text color="textMuted" fontSize={12}>
+              Lợi nhuận: <Text color="success" fontWeight="700">+{profit}</Text> 💰
+            </Text>
+          </Box>
+        </View>
+
+        <Box justifyContent='flex-end'>
+          <Button
+            borderRadius='s'
             disabled={!canAfford}
-            onPress={() => { onBuySeed(item.id); }}
-            style={{ margin: '1%', width: '48%' }}
-          >
-            <Card
-              alignItems="center"
-              backgroundColor={canAfford ? 'farmCardBgLight' : 'cardBg'}
-              borderColor="farmBorder"
-              borderRadius="m"
-              borderWidth={2}
-              opacity={canAfford ? 1 : DISABLED_OPACITY}
-              padding="m"
-            >
-              <Emoji size={40} symbol={item.icon} />
-              <Text fontSize={12} fontWeight="600" mt="xs" textAlign="center">
-                {item.name}
-              </Text>
-              <Box flexDirection="row" gap="xs" mt="xs">
-                <Text color="highlightYellow" fontSize={11} fontWeight="700">
-                  💰 {item.buyPrice}
-                </Text>
-              </Box>
-              <Text color="textSecondary" fontSize={10} mt="xs">
-                +{item.xpReward} XP
-              </Text>
-            </Card>
-          </Pressable>
-        );
-      }}
-      showsVerticalScrollIndicator={false}
-      style={{ maxHeight: 400 }}
-    />
+            onPress={handleBuy}
+            paddingHorizontal='l'
+            paddingVertical='s'
+            title="Mua"
+            variant="primary"
+          />
+        </Box>
+      </Box> : null}
+    </Box>
   );
 }

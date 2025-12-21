@@ -13,10 +13,13 @@ const palette = {
   success: '#4ADE80',
   warning: '#F59E0B',
 
-  // Text colors
-  textMuted: '#6B7280',
-  textPrimary: '#FFFFFF',
-  textSecondary: '#A1A3A8',
+  // Text colors (alphabetical order, but from lightest to darkest in usage)
+  textDark: '#374151', // Darkest for subtle hints
+  textDim: '#4B5563', // Very dim for placeholder text
+  textLight: '#E5E7EB', // Light gray for less important text
+  textMuted: '#6B7280', // Muted gray for disabled/tertiary text
+  textPrimary: '#FFFFFF', // Brightest white for main text
+  textSecondary: '#A1A3A8', // Medium gray for secondary text
 
   // Border colors
   borderDefault: '#2A2D36',

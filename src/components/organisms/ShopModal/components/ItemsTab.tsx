@@ -8,7 +8,7 @@ import Text from '@/components/atoms/Text';
 
 export function ItemsTab() {
   return (
-    <Box alignItems="center" padding="l">
+    <Box alignItems="center" height={160} padding="l">
       <Text color="textSecondary" fontSize={14} textAlign="center">
         🛠️ Coming soon...
       </Text>

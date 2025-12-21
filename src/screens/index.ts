@@ -4,3 +4,4 @@ export { default as Startup } from './Startup/Startup';
 
 // Farm game screens
 export { FarmGameScreen } from './FarmGameScreen';
+export { HabitsScreen } from './HabitsScreen';

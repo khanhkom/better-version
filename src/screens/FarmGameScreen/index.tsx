@@ -14,8 +14,6 @@ import { useAutoSave, useFarm, useGameLoop, usePomodoroLoop } from '@/hooks';
 import Box from '@/components/atoms/Box';
 import Text from '@/components/atoms/Text';
 import { CropSelector } from '@/components/molecules/CropSelector';
-import { HabitModal } from '@/components/organisms/HabitModal';
-import { NavigationBar } from '@/components/organisms/NavigationBar';
 import { PomodoroModal } from '@/components/organisms/PomodoroModal';
 import { ShopModal } from '@/components/organisms/ShopModal';
 
@@ -25,7 +23,6 @@ import {
     ExpansionArea,
     FarmGrid,
     FarmHeader,
-    PomodoroButton,
     PomodoroMiniTimer,
 } from './components';
 
@@ -67,15 +64,15 @@ export function FarmGameScreen() {
         setSelectedPlotId(undefined);
     }, []);
 
-    const handleHabitsPress = useCallback(() => {
-        openModal('HABITS');
-    }, [openModal]);
-
     const handlePomodoroPress = useCallback(() => {
         openModal('POMODORO');
     }, [openModal]);
 
     const handleShopPress = useCallback(() => {
+        openModal('SHOP');
+    }, [openModal]);
+
+    const handleStoragePress = useCallback(() => {
         openModal('SHOP');
     }, [openModal]);
 
@@ -85,7 +82,11 @@ export function FarmGameScreen() {
             style={styles.container}
         >
             <SafeAreaView style={styles.safeArea}>
-                <FarmHeader />
+                <FarmHeader
+                    onPomodoroPress={handlePomodoroPress}
+                    onShopPress={handleShopPress}
+                    onStoragePress={handleStoragePress}
+                />
 
                 {/* Farm Grid with Expansion Area */}
                 <Box flex={1} position="relative">
@@ -95,7 +96,6 @@ export function FarmGameScreen() {
                     <Box bottom={20} left={20} position="absolute">
                         <ExpansionArea onPress={() => { }} />
                     </Box>
-                    <PomodoroMiniTimer onPress={handlePomodoroPress} />
                 </Box>
 
                 {/* Status text */}
@@ -105,20 +105,10 @@ export function FarmGameScreen() {
                     </Text>
                 </Box>
 
-                {/* Navigation Bar */}
-                <NavigationBar
-                    onHabitsPress={handleHabitsPress}
-                    onPomodoroPress={handlePomodoroPress}
-                    onShopPress={handleShopPress}
-                />
-
                 {/* Mini Timer when Pomodoro is running */}
+                <PomodoroMiniTimer onPress={handlePomodoroPress} />
 
                 {/* Modals */}
-                <HabitModal
-                    onClose={closeModal}
-                    visible={activeModal === 'HABITS'}
-                />
                 <PomodoroModal
                     onClose={closeModal}
                     visible={activeModal === 'POMODORO'}

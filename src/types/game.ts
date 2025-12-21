@@ -4,77 +4,84 @@
  */
 
 /** Crop identifiers */
-export type CropId = 'tomato' | 'carrot' | 'corn' | 'watermelon';
+export type CropId = 'carrot' | 'corn' | 'tomato' | 'watermelon';
 
 /** Plot status states */
 export type PlotStatus = 'EMPTY' | 'PLANTED' | 'READY';
 
 /** Tool types */
-export type ToolType = 'WATER' | 'DIG' | 'PLANT' | null;
+export type ToolType = 'DIG' | 'PLANT' | 'WATER' | null;
 
 /** Pomodoro mode */
-export type PomodoroMode = 'FOCUS' | 'BREAK' | 'IDLE';
+export type PomodoroMode = 'BREAK' | 'FOCUS' | 'IDLE';
 
 /** Habit frequency */
 export type HabitFrequency = 'daily' | 'weekly';
 
 /** Crop configuration */
 export type Crop = {
+  buyPrice: number;
+  growthTime: number; // seconds
+  icon: string;
   id: CropId;
   name: string;
-  icon: string;
-  growthTime: number; // seconds
-  buyPrice: number;
   sellPrice: number;
   xpReward: number;
 };
 
 /** Land plot */
 export type LandPlot = {
-  id: string;
-  status: PlotStatus;
   cropId?: CropId;
+  id: string;
   plantedAt?: number; // Unix timestamp (ms)
   progress: number; // 0-100
+  status: PlotStatus;
 };
+
+/** Habit difficulty level */
+export type HabitDifficulty = 'easy' | 'hard' | 'medium';
 
 /** Habit item */
 export type Habit = {
-  id: string;
-  title: string;
-  description?: string;
-  frequency: HabitFrequency;
-  createdAt: number;
   completionDates: number[]; // Unix timestamps (ms)
+  createdAt: number;
+  description?: string;
+  difficulty: HabitDifficulty;
+  frequency: HabitFrequency;
+  icon?: string; // Icon identifier or emoji
+  id: string;
+  moneyReward: number;
+  reminderTime?: string; // Time in HH:mm format
   streak: number;
+  title: string;
   xpReward: number;
 };
 
 /** Pomodoro session */
 export type PomodoroSession = {
-  mode: PomodoroMode;
+  completedSessions: number;
   duration: number; // seconds
+  isRunning: boolean;
+  mode: PomodoroMode;
   remaining: number; // seconds
   startedAt?: number; // Unix timestamp (ms)
-  isRunning: boolean;
-  completedSessions: number;
 };
 
 /** Full game state */
 export type GameState = {
   // Player stats
-  money: number;
   diamonds: number;
-  xp: number;
   level: number;
+  money: number;
+  xp: number;
 
   // Farm
   plots: LandPlot[];
   selectedTool: ToolType;
 
   // Inventory
-  inventory: Record<CropId, number>; // Seeds owned
   harvested: Record<CropId, number>; // Crops harvested
+  inventory: Record<CropId, number>; // Seeds owned
 
   // Habits
   habits: Habit[];
@@ -87,6 +94,6 @@ export type GameState = {
   minimizedPomodoro: boolean;
 
   // Metadata
-  lastSaveTime: number;
   gameVersion: string;
+  lastSaveTime: number;
 };

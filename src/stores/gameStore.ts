@@ -75,6 +75,10 @@ type GameStore = {
   ) => void;
   deleteHabit: (habitId: string) => void;
   toggleHabitCompletion: (habitId: string, date: number) => void;
+  updateHabit: (
+    habitId: string,
+    updates: Partial<Omit<Habit, 'completionDates' | 'createdAt' | 'id' | 'streak'>>,
+  ) => void;
   updateHabitStreak: (habitId: string) => void;
 
   // Pomodoro actions
@@ -301,13 +305,28 @@ export const useGameStore = create<GameStore>()(
 
       // Habit actions
       addHabit: (habit) => {
+        // Calculate money reward based on difficulty
+        const moneyRewards = {
+          easy: 10,
+          hard: 40,
+          medium: 20,
+        };
+        const xpRewards = {
+          easy: 15,
+          hard: 60,
+          medium: 30,
+        };
+
+        const difficulty = habit.difficulty ?? 'medium';
         const newHabit: Habit = {
           ...habit,
           completionDates: [],
           createdAt: Date.now(),
+          difficulty,
           id: `habit_${Date.now()}`,
+          moneyReward: moneyRewards[difficulty],
           streak: 0,
-          xpReward: HABIT_XP_REWARD,
+          xpReward: habit.xpReward ?? xpRewards[difficulty],
         };
 
         set((state) => ({
@@ -318,6 +337,39 @@ export const useGameStore = create<GameStore>()(
       deleteHabit: (habitId) => {
         set((state) => ({
           habits: state.habits.filter((h) => h.id !== habitId),
+        }));
+      },
+
+      updateHabit: (habitId, updates) => {
+        // Calculate rewards if difficulty changed
+        const moneyRewards = {
+          easy: 10,
+          hard: 40,
+          medium: 20,
+        };
+        const xpRewards = {
+          easy: 15,
+          hard: 60,
+          medium: 30,
+        };
+
+        set((state) => ({
+          habits: state.habits.map((h) => {
+            if (h.id !== habitId) return h;
+
+            const newDifficulty = updates.difficulty ?? h.difficulty;
+            return {
+              ...h,
+              ...updates,
+              difficulty: newDifficulty,
+              moneyReward: updates.difficulty
+                ? moneyRewards[newDifficulty]
+                : h.moneyReward,
+              xpReward: updates.difficulty
+                ? xpRewards[newDifficulty]
+                : h.xpReward,
+            };
+          }),
         }));
       },
 

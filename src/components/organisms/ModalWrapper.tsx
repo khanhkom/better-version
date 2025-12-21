@@ -40,11 +40,11 @@ export function ModalWrapper({
 
   useEffect(() => {
     if (visible) {
-      opacity.value = withTiming(1, { duration: 120 });
-      scale.value = withSpring(1, { damping: 20, stiffness: 200 });
+      opacity.value = withTiming(1, { duration: 80 });
+      scale.value = withSpring(1, { damping: 25, stiffness: 300 });
     } else {
-      opacity.value = withTiming(0, { duration: 100 });
-      scale.value = withTiming(INITIAL_SCALE, { duration: 100 });
+      opacity.value = withTiming(0, { duration: 60 });
+      scale.value = withTiming(INITIAL_SCALE, { duration: 60 });
     }
   }, [visible, opacity, scale]);
 

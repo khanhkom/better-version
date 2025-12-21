@@ -3,17 +3,20 @@
  * Habit tracking modal with daily/weekly habits
  */
 
-import React, { useState } from 'react';
-import { FlatList, TextInput, StyleSheet } from 'react-native';
-
 import type { HabitFrequency } from '@/types/game';
-import { useGameStore } from '@/stores/gameStore';
+
+import { useState } from 'react';
+import { FlatList, StyleSheet, TextInput } from 'react-native';
 
 import Box from '@/components/atoms/Box';
 import Button from '@/components/atoms/Button';
 import Text from '@/components/atoms/Text';
 import { HabitCard } from '@/components/molecules/HabitCard';
 import { ModalWrapper } from '@/components/organisms/ModalWrapper';
+
+import { useGameStore } from '@/stores/gameStore';
+
+const DEFAULT_XP_REWARD = 10;
 
 type HabitModalProps = {
   readonly onClose: () => void;
@@ -33,15 +36,32 @@ export function HabitModal({ onClose, visible }: HabitModalProps) {
 
   const handleAddHabit = () => {
     if (newHabitName.trim()) {
-      addHabit(newHabitName.trim(), newHabitFrequency, parseInt(newHabitXP, 10) || 10);
+      addHabit({
+        frequency: newHabitFrequency,
+        title: newHabitName.trim(),
+        xpReward: Number.parseInt(newHabitXP, 10) || DEFAULT_XP_REWARD,
+      });
       setNewHabitName('');
       setNewHabitXP('10');
       setShowAddDialog(false);
     }
   };
 
+  const handleToggleHabit = (habitId: string) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    toggleHabitCompletion(habitId, today.getTime());
+  };
+
+  const getCompletedTodayCount = () => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const todayTimestamp = today.getTime();
+    return habits.filter((h) => h.completionDates.includes(todayTimestamp)).length;
+  };
+
   const renderAddDialog = () => {
-    if (!showAddDialog) return null;
+    if (!showAddDialog) return undefined;
 
     return (
       <Box
@@ -73,32 +93,30 @@ export function HabitModal({ onClose, visible }: HabitModalProps) {
           Tần suất:
         </Text>
         <Box flexDirection="row" gap="s" mb="m">
-          <Button
-            backgroundColor={newHabitFrequency === 'daily' ? 'success' : 'cardBg'}
-            borderColor="farmBorder"
-            borderRadius="s"
-            borderWidth={2}
-            flex={1}
-            onPress={() => { setNewHabitFrequency('daily'); }}
-            paddingVertical="s"
-          >
-            <Text fontSize={12} fontWeight="600" textAlign="center">
-              Hàng ngày
-            </Text>
-          </Button>
-          <Button
-            backgroundColor={newHabitFrequency === 'weekly' ? 'success' : 'cardBg'}
-            borderColor="farmBorder"
-            borderRadius="s"
-            borderWidth={2}
-            flex={1}
-            onPress={() => { setNewHabitFrequency('weekly'); }}
-            paddingVertical="s"
-          >
-            <Text fontSize={12} fontWeight="600" textAlign="center">
-              Hàng tuần
-            </Text>
-          </Button>
+          <Box flex={1}>
+            <Button
+              backgroundColor={newHabitFrequency === 'daily' ? 'success' : 'cardBg'}
+              borderColor="farmBorder"
+              borderRadius="s"
+              borderWidth={2}
+              onPress={() => { setNewHabitFrequency('daily'); }}
+              paddingVertical="s"
+              textColor="textPrimary"
+              title="Hàng ngày"
+            />
+          </Box>
+          <Box flex={1}>
+            <Button
+              backgroundColor={newHabitFrequency === 'weekly' ? 'success' : 'cardBg'}
+              borderColor="farmBorder"
+              borderRadius="s"
+              borderWidth={2}
+              onPress={() => { setNewHabitFrequency('weekly'); }}
+              paddingVertical="s"
+              textColor="textPrimary"
+              title="Hàng tuần"
+            />
+          </Box>
         </Box>
 
         {/* XP Reward */}
@@ -116,32 +134,30 @@ export function HabitModal({ onClose, visible }: HabitModalProps) {
 
         {/* Action Buttons */}
         <Box flexDirection="row" gap="s" mt="m">
-          <Button
-            backgroundColor="danger"
-            borderRadius="s"
-            flex={1}
-            onPress={() => {
-              setShowAddDialog(false);
-              setNewHabitName('');
-              setNewHabitXP('10');
-            }}
-            paddingVertical="m"
-          >
-            <Text fontSize={12} fontWeight="600" textAlign="center">
-              Hủy
-            </Text>
-          </Button>
-          <Button
-            backgroundColor="success"
-            borderRadius="s"
-            flex={1}
-            onPress={handleAddHabit}
-            paddingVertical="m"
-          >
-            <Text fontSize={12} fontWeight="600" textAlign="center">
-              Thêm
-            </Text>
-          </Button>
+          <Box flex={1}>
+            <Button
+              backgroundColor="danger"
+              borderRadius="s"
+              onPress={() => {
+                setShowAddDialog(false);
+                setNewHabitName('');
+                setNewHabitXP('10');
+              }}
+              paddingVertical="m"
+              textColor="textPrimary"
+              title="Hủy"
+            />
+          </Box>
+          <Box flex={1}>
+            <Button
+              backgroundColor="success"
+              borderRadius="s"
+              onPress={handleAddHabit}
+              paddingVertical="m"
+              textColor="textPrimary"
+              title="Thêm"
+            />
+          </Box>
         </Box>
       </Box>
     );
@@ -151,19 +167,18 @@ export function HabitModal({ onClose, visible }: HabitModalProps) {
     <ModalWrapper onClose={onClose} title="📋 Nhiệm Vụ" visible={visible} width={380}>
       {/* Add Habit Button */}
       {!showAddDialog && (
-        <Button
-          backgroundColor="success"
-          borderColor="farmBorder"
-          borderRadius="m"
-          borderWidth={2}
-          mb="m"
-          onPress={() => { setShowAddDialog(true); }}
-          paddingVertical="m"
-        >
-          <Text fontSize={13} fontWeight="700" textAlign="center">
-            ➕ Thêm Nhiệm Vụ Mới
-          </Text>
-        </Button>
+        <Box mb="m">
+          <Button
+            backgroundColor="success"
+            borderColor="farmBorder"
+            borderRadius="m"
+            borderWidth={2}
+            onPress={() => { setShowAddDialog(true); }}
+            paddingVertical="m"
+            textColor="textPrimary"
+            title="➕ Thêm Nhiệm Vụ Mới"
+          />
+        </Box>
       )}
 
       {/* Add Dialog */}
@@ -187,7 +202,7 @@ export function HabitModal({ onClose, visible }: HabitModalProps) {
             <HabitCard
               habit={item}
               onDelete={deleteHabit}
-              onToggle={toggleHabitCompletion}
+              onToggle={handleToggleHabit}
             />
           )}
           showsVerticalScrollIndicator={false}
@@ -204,7 +219,7 @@ export function HabitModal({ onClose, visible }: HabitModalProps) {
           padding="m"
         >
           <Text color="textSecondary" fontSize={11} textAlign="center">
-            📊 {habits.filter((h) => h.completedToday).length}/{habits.length} hoàn thành hôm nay
+            📊 {getCompletedTodayCount()}/{habits.length} hoàn thành hôm nay
           </Text>
         </Box>
       )}

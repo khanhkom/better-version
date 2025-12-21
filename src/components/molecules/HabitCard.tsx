@@ -3,16 +3,16 @@
  * Displays a habit with completion status and streak
  */
 
-import React from 'react';
-import { Pressable } from 'react-native';
-
 import type { Habit } from '@/types/game';
+
+import { Pressable, TouchableOpacity } from 'react-native';
 
 import Box from '@/components/atoms/Box';
 import Card from '@/components/atoms/Card';
-import Text from '@/components/atoms/Text';
-import Button from '@/components/atoms/Button';
 import { Emoji } from '@/components/atoms/Emoji';
+import Text from '@/components/atoms/Text';
+
+const COMPLETED_OPACITY = 0.7;
 
 type HabitCardProps = {
   readonly habit: Habit;
@@ -21,7 +21,12 @@ type HabitCardProps = {
 };
 
 export function HabitCard({ habit, onDelete, onToggle }: HabitCardProps) {
-  const isCompleted = habit.completedToday;
+  // Check if habit is completed today
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const todayTimestamp = today.getTime();
+  const isCompleted = habit.completionDates.includes(todayTimestamp);
+
   const frequencyLabel = habit.frequency === 'daily' ? 'Hàng ngày' : 'Hàng tuần';
 
   return (
@@ -31,7 +36,7 @@ export function HabitCard({ habit, onDelete, onToggle }: HabitCardProps) {
       borderRadius="m"
       borderWidth={2}
       mb="s"
-      opacity={isCompleted ? 0.7 : 1}
+      opacity={isCompleted ? COMPLETED_OPACITY : 1}
       padding="m"
     >
       <Box flexDirection="row" gap="m">
@@ -47,7 +52,7 @@ export function HabitCard({ habit, onDelete, onToggle }: HabitCardProps) {
             justifyContent="center"
             width={40}
           >
-            {isCompleted && <Emoji size={24} symbol="✓" />}
+            {isCompleted ? <Emoji size={24} symbol="✓" /> : undefined}
           </Box>
         </Pressable>
 
@@ -59,7 +64,7 @@ export function HabitCard({ habit, onDelete, onToggle }: HabitCardProps) {
             mb="xs"
             style={{ textDecorationLine: isCompleted ? 'line-through' : 'none' }}
           >
-            {habit.name}
+            {habit.title}
           </Text>
           <Text color="textSecondary" fontSize={11} mb="xs">
             {frequencyLabel} • {habit.xpReward} XP
@@ -72,14 +77,17 @@ export function HabitCard({ habit, onDelete, onToggle }: HabitCardProps) {
         </Box>
 
         {/* Delete Button */}
-        <Button
-          backgroundColor="danger"
-          borderRadius="s"
-          onPress={() => { onDelete(habit.id); }}
-          padding="xs"
-        >
-          <Text fontSize={14}>🗑️</Text>
-        </Button>
+        <TouchableOpacity onPress={() => { onDelete(habit.id); }}>
+          <Box
+            alignItems="center"
+            backgroundColor="danger"
+            borderRadius="s"
+            justifyContent="center"
+            padding="xs"
+          >
+            <Text fontSize={14}>🗑️</Text>
+          </Box>
+        </TouchableOpacity>
       </Box>
     </Card>
   );

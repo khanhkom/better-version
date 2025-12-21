@@ -3,26 +3,31 @@
  * Shop system with 4 tabs: Seeds, Items, Storage, Seed Storage
  */
 
-import React, { useState } from 'react';
-import { FlatList, Pressable } from 'react-native';
-
-import { CROPS } from '@/constants/game';
 import type { CropId } from '@/types/game';
-import { useGameStore } from '@/stores/gameStore';
+
+import { useState } from 'react';
+import { FlatList, Pressable } from 'react-native';
 
 import Box from '@/components/atoms/Box';
 import Card from '@/components/atoms/Card';
-import Text from '@/components/atoms/Text';
 import { Emoji } from '@/components/atoms/Emoji';
+import Text from '@/components/atoms/Text';
 import { TabBar } from '@/components/molecules/TabBar';
 import { ModalWrapper } from '@/components/organisms/ModalWrapper';
 
-type ShopTab = 'seeds' | 'items' | 'storage' | 'seedStorage';
+import { CROPS } from '@/constants/game';
+import { useGameStore } from '@/stores/gameStore';
+
+const DISABLED_OPACITY = 0.5;
+const SECONDS_PER_HOUR = 3600;
+const DEFAULT_QUANTITY = 1;
 
 type ShopModalProps = {
   readonly onClose: () => void;
   readonly visible: boolean;
 };
+
+type ShopTab = 'items' | 'seeds' | 'seedStorage' | 'storage';
 
 export function ShopModal({ onClose, visible }: ShopModalProps) {
   const [activeTab, setActiveTab] = useState<ShopTab>('seeds');
@@ -42,14 +47,18 @@ export function ShopModal({ onClose, visible }: ShopModalProps) {
   const handleBuySeed = (cropId: CropId) => {
     const crop = CROPS[cropId];
     if (money >= crop.buyPrice) {
-      buySeed(cropId);
+      buySeed(cropId, DEFAULT_QUANTITY);
     }
   };
 
   const handleSellHarvest = (cropId: CropId) => {
     if (harvested[cropId] > 0) {
-      sellHarvest(cropId);
+      sellHarvest(cropId, DEFAULT_QUANTITY);
     }
+  };
+
+  const handleTabChange = (tabId: string) => {
+    setActiveTab(tabId as ShopTab);
   };
 
   const renderSeedsTab = () => {
@@ -66,7 +75,7 @@ export function ShopModal({ onClose, visible }: ShopModalProps) {
             <Pressable
               disabled={!canAfford}
               onPress={() => { handleBuySeed(item.id); }}
-              style={{ width: '48%', margin: '1%' }}
+              style={{ margin: '1%', width: '48%' }}
             >
               <Card
                 alignItems="center"
@@ -74,7 +83,7 @@ export function ShopModal({ onClose, visible }: ShopModalProps) {
                 borderColor="farmBorder"
                 borderRadius="m"
                 borderWidth={2}
-                opacity={canAfford ? 1 : 0.5}
+                opacity={canAfford ? 1 : DISABLED_OPACITY}
                 padding="m"
               >
                 <Emoji size={40} symbol={item.icon} />
@@ -139,7 +148,7 @@ export function ShopModal({ onClose, visible }: ShopModalProps) {
           return (
             <Pressable
               onPress={() => { handleSellHarvest(item.id); }}
-              style={{ width: '48%', margin: '1%' }}
+              style={{ margin: '1%', width: '48%' }}
             >
               <Card
                 alignItems="center"
@@ -200,7 +209,7 @@ export function ShopModal({ onClose, visible }: ShopModalProps) {
           const count = inventory[item.id];
 
           return (
-            <Box style={{ width: '48%', margin: '1%' }}>
+            <Box style={{ margin: '1%', width: '48%' }}>
               <Card
                 alignItems="center"
                 backgroundColor="farmCardBgLight"
@@ -217,7 +226,7 @@ export function ShopModal({ onClose, visible }: ShopModalProps) {
                   {count} seeds
                 </Text>
                 <Text color="textSecondary" fontSize={10} mt="xs">
-                  Growth: {Math.floor(item.growthTime / 3600)}h
+                  Growth: {Math.floor(item.growthTime / SECONDS_PER_HOUR)}h
                 </Text>
               </Card>
             </Box>
@@ -231,16 +240,21 @@ export function ShopModal({ onClose, visible }: ShopModalProps) {
 
   const renderTabContent = () => {
     switch (activeTab) {
-      case 'seeds':
-        return renderSeedsTab();
-      case 'items':
+      case 'items': {
         return renderItemsTab();
-      case 'storage':
-        return renderStorageTab();
-      case 'seedStorage':
+      }
+      case 'seeds': {
+        return renderSeedsTab();
+      }
+      case 'seedStorage': {
         return renderSeedStorageTab();
-      default:
-        return null;
+      }
+      case 'storage': {
+        return renderStorageTab();
+      }
+      default: {
+        return undefined;
+      }
     }
   };
 
@@ -265,7 +279,7 @@ export function ShopModal({ onClose, visible }: ShopModalProps) {
       {/* Tab Navigation */}
       <TabBar
         activeTab={activeTab}
-        onTabChange={setActiveTab}
+        onTabChange={handleTabChange}
         tabs={tabs}
       />
 

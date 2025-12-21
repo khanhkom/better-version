@@ -6,7 +6,7 @@
 import type { LandPlot } from '@/types/game';
 
 import { useEffect } from 'react';
-import { Pressable } from 'react-native';
+import { ImageBackground, Pressable } from 'react-native';
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -19,6 +19,7 @@ import Card from '@/components/atoms/Card';
 import { Emoji } from '@/components/atoms/Emoji';
 import Text from '@/components/atoms/Text';
 
+import { images } from '@/assets/images';
 import { CROPS } from '@/constants/game';
 
 const MAX_PROGRESS = 100;
@@ -51,56 +52,64 @@ export function PlotCard({ onPress, plot, testID = undefined }: PlotCardProps) {
 
   return (
     <Pressable onPress={onPress} testID={testID}>
-      <Card
-        alignItems="center"
-        height="100%"
-        justifyContent="center"
-        width="100%"
+      <ImageBackground
+        borderRadius={8}
+        resizeMode="stretch"
+        source={images.farm.oDat}
+        style={{ borderRadius: 12, height: '100%', width: '100%' }}
       >
-        {/* Empty plot */}
-        {plot.status === 'EMPTY' && (
-          <Box alignItems="center" opacity={0.3}>
-            <Emoji size={32} symbol="🌱" />
-          </Box>
-        )}
+        <Card
+          alignItems="center"
+          backgroundColor="transparent"
+          height="100%"
+          justifyContent="center"
+          width="100%"
+        >
+          {/* Empty plot */}
+          {plot.status === 'EMPTY' && (
+            <Box alignItems="center" opacity={0.5}>
+              <Emoji size={24} symbol="🌱" />
+            </Box>
+          )}
 
-        {/* Planted crop with progress */}
-        {plot.status === 'PLANTED' && crop ? (
-          <Box alignItems="center" width="100%">
-            <Animated.View style={swayStyle}>
-              <Emoji size={40} symbol={crop.icon} />
-            </Animated.View>
-            <Box mt="s" width="100%">
-              {/* Custom progress bar */}
-              <Box
-                backgroundColor="farmBorder"
-                borderRadius="full"
-                height={6}
-                overflow="hidden"
-              >
+          {/* Planted crop with progress */}
+          {plot.status === 'PLANTED' && crop ? (
+            <Box alignItems="center" width="100%">
+              <Animated.View style={swayStyle}>
+                <Emoji size={24} symbol={crop.icon} />
+              </Animated.View>
+              <Box mt="s" width="80%">
+                {/* Custom progress bar */}
                 <Box
-                  backgroundColor="highlightYellow"
+                  backgroundColor="farmBorder"
                   borderRadius="full"
-                  height="100%"
-                  width={`${Math.min(MAX_PROGRESS, Math.max(0, plot.progress))}%`}
-                />
+                  height={4}
+                  overflow="hidden"
+                >
+                  <Box
+                    backgroundColor="highlightYellow"
+                    borderRadius="full"
+                    height="100%"
+                    width={`${Math.min(MAX_PROGRESS, Math.max(0, plot.progress))}%`}
+                  />
+                </Box>
               </Box>
             </Box>
-          </Box>
-        ) : undefined}
+          ) : undefined}
 
-        {/* Ready to harvest */}
-        {plot.status === 'READY' && crop ? (
-          <Box alignItems="center">
-            <Animated.View style={swayStyle}>
-              <Emoji size={48} symbol={crop.icon} />
-            </Animated.View>
-            <Text color="highlightYellow" fontSize={10} fontWeight="700" mt="s">
-              READY!
-            </Text>
-          </Box>
-        ) : undefined}
-      </Card>
+          {/* Ready to harvest */}
+          {plot.status === 'READY' && crop ? (
+            <Box alignItems="center">
+              <Animated.View style={swayStyle}>
+                <Emoji size={24} symbol={crop.icon} />
+              </Animated.View>
+              <Text color="highlightYellow" fontSize={10} fontWeight="700" mt="s">
+                READY!
+              </Text>
+            </Box>
+          ) : undefined}
+        </Card>
+      </ImageBackground>
     </Pressable>
   );
 }

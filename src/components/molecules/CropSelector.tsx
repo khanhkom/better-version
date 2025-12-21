@@ -5,6 +5,7 @@
 
 import type { CropId } from '@/types/game';
 
+import { X } from 'lucide-react-native';
 import { Modal, Pressable, StyleSheet, TouchableOpacity } from 'react-native';
 
 import Box from '@/components/atoms/Box';
@@ -68,13 +69,13 @@ export function CropSelector({
                     justifyContent="center"
                     padding="xs"
                   >
-                    <Text fontSize={16}>❌</Text>
+                    <X color="white" size={20} />
                   </Box>
                 </TouchableOpacity>
               </Box>
 
               {/* Crop Grid */}
-              <Box flexDirection="row" flexWrap="wrap" gap="s">
+              <Box flexDirection="row" flexWrap="wrap" gap="m" justifyContent="flex-start">
                 {Object.values(CROPS).map((crop) => {
                   const available = inventory[crop.id];
                   const isDisabled = available === 0;
@@ -84,40 +85,38 @@ export function CropSelector({
                       disabled={isDisabled}
                       key={crop.id}
                       onPress={() => { handleSelect(crop.id); }}
-                      style={{ width: '48%' }}
                     >
-                      <Card
+                      <Box
                         alignItems="center"
-                        backgroundColor={
-                          isDisabled ? 'cardBg' : 'farmCardBgLight'
-                        }
-                        borderColor="farmBorder"
+                        backgroundColor={isDisabled ? 'cardBg' : 'farmCardBgLight'}
+                        borderColor={isDisabled ? 'borderDefault' : 'farmBorder'}
                         borderRadius="m"
                         borderWidth={2}
+                        height={48}
+                        justifyContent="center"
                         opacity={isDisabled ? DISABLED_OPACITY : 1}
-                        padding="m"
+                        position="relative"
+                        width={48}
                       >
-                        <Emoji size={40} symbol={crop.icon} />
-                        <Text
-                          fontSize={12}
-                          fontWeight="600"
-                          mt="xs"
-                          textAlign="center"
-                        >
-                          {crop.name}
-                        </Text>
-                        <Text
-                          color={available > 0 ? 'success' : 'danger'}
-                          fontSize={11}
-                          fontWeight="700"
-                          mt="xs"
-                        >
-                          {available} seeds
-                        </Text>
-                        <Text color="textSecondary" fontSize={10} mt="xs">
-                          {crop.buyPrice}💰
-                        </Text>
-                      </Card>
+                        <Emoji size={32} symbol={crop.icon} />
+                        {available > 0 && (
+                          <Box
+                            alignItems="center"
+                            backgroundColor="success"
+                            borderRadius="full"
+                            bottom={-4}
+                            height={16}
+                            justifyContent="center"
+                            position="absolute"
+                            right={-4}
+                            width={16}
+                          >
+                            <Text color="white" fontSize={9} fontWeight="700">
+                              {available}
+                            </Text>
+                          </Box>
+                        )}
+                      </Box>
                     </Pressable>
                   );
                 })}

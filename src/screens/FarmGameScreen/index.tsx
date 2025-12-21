@@ -20,7 +20,6 @@ import { ShopModal } from '@/components/organisms/ShopModal';
 import { useGameStore } from '@/stores/gameStore';
 
 import {
-    ExpansionArea,
     FarmGrid,
     FarmHeader,
     PomodoroMiniTimer,
@@ -76,6 +75,10 @@ export function FarmGameScreen() {
         openModal('SHOP');
     }, [openModal]);
 
+    const handleExpansionPress = useCallback(() => {
+        // TODO: Handle expansion logic
+    }, []);
+
     return (
         <LinearGradient
             colors={['#8d6e63', '#8d6e63']}
@@ -89,13 +92,12 @@ export function FarmGameScreen() {
                 />
 
                 {/* Farm Grid with Expansion Area */}
-                <Box flex={1} position="relative">
-                    <FarmGrid onPlotPress={handlePlotPress} plots={plots} />
-
-                    {/* Expansion Area - Bottom Left */}
-                    <Box bottom={20} left={20} position="absolute">
-                        <ExpansionArea onPress={() => { }} />
-                    </Box>
+                <Box backgroundColor="breakGreen" flex={1} position="relative">
+                    <FarmGrid
+                        onExpansionPress={handleExpansionPress}
+                        onPlotPress={handlePlotPress}
+                        plots={plots}
+                    />
                 </Box>
 
                 {/* Status text */}

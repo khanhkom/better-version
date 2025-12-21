@@ -5,38 +5,66 @@
 
 import type { LandPlot } from '@/types/game';
 
-import { FlatList } from 'react-native';
+import { ImageBackground } from 'react-native';
 
 import Box from '@/components/atoms/Box';
 import { PlotCard } from '@/components/molecules/PlotCard';
 
-const PLOT_SIZE = 120;
+import { images } from '@/assets/images';
+import { scaleWidth } from '@/configs/functions';
+
+import { ExpansionArea } from './ExpansionArea';
+
+const PLOT_SIZE = scaleWidth(46);
+const PLOTS_PER_ROW = 6;
 
 type FarmGridProps = {
+    readonly onExpansionPress: () => void;
     readonly onPlotPress: (plotId: string) => void;
     readonly plots: readonly LandPlot[];
 };
 
-export function FarmGrid({ onPlotPress, plots }: FarmGridProps) {
+export function FarmGrid({ onExpansionPress, onPlotPress, plots }: FarmGridProps) {
+    // Group plots into rows of 6
+    const rows: LandPlot[][] = [];
+    for (let index = 0; index < plots.length; index += PLOTS_PER_ROW) {
+        rows.push(plots.slice(index, index + PLOTS_PER_ROW));
+    }
+
     return (
-        <Box flex={1} padding="m">
-            <FlatList
-                columnWrapperStyle={{ gap: 12, justifyContent: 'center' }}
-                contentContainerStyle={{ gap: 12 }}
-                data={plots as LandPlot[]}
-                keyExtractor={(item) => item.id}
-                numColumns={2}
-                renderItem={({ item }) => (
-                    <Box height={PLOT_SIZE} width={PLOT_SIZE}>
-                        <PlotCard
-                            onPress={() => { onPlotPress(item.id); }}
-                            plot={item}
-                            testID={`plot-${item.id}`}
-                        />
+        <ImageBackground
+            borderRadius={12}
+            resizeMode='stretch'
+            source={images.farm.backgroundFarm}
+            style={{
+                borderRadius: 12, height: 180, paddingVertical: 16,
+                width: scaleWidth(380)
+            }}
+        >
+            <Box flex={1} padding="m">
+                <Box gap="m">
+                    {rows.map((row) => (
+                        <Box flexDirection="row" gap="s" justifyContent="center" key={row[0]?.id}>
+                            {row.map((plot) => (
+                                <Box height={PLOT_SIZE} key={plot.id} width={PLOT_SIZE}>
+                                    <PlotCard
+                                        onPress={() => { onPlotPress(plot.id); }}
+                                        plot={plot}
+                                        testID={`plot-${plot.id}`}
+                                    />
+                                </Box>
+                            ))}
+                        </Box>
+                    ))}
+                    {/* Expansion Area - Next slot after plots */}
+                    <Box flexDirection="row" gap="s" paddingLeft="xl">
+                        <Box height={PLOT_SIZE} width={PLOT_SIZE}>
+                            <ExpansionArea onPress={onExpansionPress} />
+                        </Box>
                     </Box>
-                )}
-            />
-        </Box>
+                </Box>
+            </Box>
+        </ImageBackground>
     );
 }
 

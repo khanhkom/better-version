@@ -20,40 +20,19 @@ export function ExpansionArea({ onPress }: ExpansionAreaProps) {
             <Box
                 alignItems="center"
                 borderColor="borderDefault"
-                borderRadius="m"
+                borderRadius="s"
                 borderStyle="dashed"
-                borderWidth={2}
-                height={120}
+                borderWidth={1.5}
+                height={46}
                 justifyContent="center"
-                padding="m"
-                width={120}
+                width={46}
             >
-                <Text color="textSecondary" fontSize={24} mb="s">
+                <Text color='textPrimary' fontSize={16} fontWeight="700">
                     +
                 </Text>
-                <Box
-                    alignItems="center"
-                    backgroundColor="cardBg"
-                    borderRadius="s"
-                    borderWidth={1}
-                    paddingHorizontal="s"
-                    paddingVertical="xs"
-                >
-                    <Text color="white" fontSize={10} fontWeight="700">
-                        MỞ RỘNG
-                    </Text>
-                </Box>
-                <Box alignItems="center" flexDirection="row" gap="xs" mt="xs">
-                    <Text color="white" fontSize={12} fontWeight="700">
-                        {EXPANSION_COST}
-                    </Text>
-                    <Box
-                        backgroundColor="textSecondary"
-                        borderRadius="full"
-                        height={12}
-                        width={12}
-                    />
-                </Box>
+                <Text color="white" fontSize={7} fontWeight="600" mt="xxs">
+                    {EXPANSION_COST}
+                </Text>
             </Box>
         </Pressable>
     );

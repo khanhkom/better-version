@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(tree:*)",
+      "Bash(Get-Date -UFormat \"%y%m%d\")"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

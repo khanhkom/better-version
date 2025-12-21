@@ -5,8 +5,9 @@
 
 import type { Habit } from '@/types/game';
 
+import { Check } from 'lucide-react-native';
 import { useState } from 'react';
-import { Alert, Pressable } from 'react-native';
+import { Alert, Pressable, TouchableOpacity } from 'react-native';
 
 import Box from '@/components/atoms/Box';
 import Button from '@/components/atoms/Button';
@@ -78,7 +79,7 @@ export function TaskCard({ habit, isCompleted = false, onDelete, onEdit, onPlant
             onPressOut={() => { setIsPressed(false); }}
         >
             <Box
-                backgroundColor="farmCardBgLight"
+                backgroundColor={isCompleted ? 'farmBorder' : 'farmCardBgLight'}
                 borderColor="white"
                 borderRadius="m"
                 borderWidth={2}
@@ -102,16 +103,16 @@ export function TaskCard({ habit, isCompleted = false, onDelete, onEdit, onPlant
                     alignItems="center"
                     backgroundColor="white"
                     borderRadius="s"
-                    height={48}
+                    height={42}
                     justifyContent="center"
-                    width={48}
+                    width={42}
                 >
-                    <Emoji size={22} symbol={habit.icon ?? '📋'} />
+                    <Emoji size={18} symbol={habit.icon ?? '📋'} />
                 </Box>
 
                 {/* Content */}
                 <Box flex={1}>
-                    <Text color="farmBorderDark" fontSize={15} fontWeight="700" marginBottom="xs">
+                    <Text color={isCompleted ? 'textPrimary' : 'farmBorderDark'} fontSize={15} fontWeight="700" marginBottom="xs">
                         {habit.title}
                     </Text>
                     <Box flexDirection="row" gap="s" style={{ alignItems: 'center' }}>
@@ -121,25 +122,41 @@ export function TaskCard({ habit, isCompleted = false, onDelete, onEdit, onPlant
                         <Text color="warning" fontSize={11} fontWeight="500">
                             +{habit.moneyReward} Xu
                         </Text>
-                        <Text color="primary" fontSize={11} fontWeight="500">
+                        <Text color='breakGreen' fontSize={11} fontWeight="500">
                             +{habit.xpReward} XP
                         </Text>
                     </Box>
                 </Box>
 
                 {/* Gieo/Xong Button */}
-                <Button
-                    backgroundColor={buttonColor}
-                    borderColor="white"
-                    borderRadius="m"
-                    borderWidth={2}
-                    disabled={isCompleted}
-                    onPress={() => { onPlant(habit.id); }}
-                    paddingHorizontal="l"
-                    paddingVertical="s"
-                    textColor="white"
-                    title={buttonText}
-                />
+                {isCompleted ? (
+                    <TouchableOpacity disabled onPress={() => { onPlant(habit.id); }}>
+                        <Box
+                            alignItems="center"
+                            backgroundColor="success"
+                            borderColor="white"
+                            borderRadius="xl"
+                            borderWidth={2}
+                            justifyContent="center"
+                            paddingHorizontal="s"
+                            paddingVertical="s"
+                        >
+                            <Check color="white" size={20} />
+                        </Box>
+                    </TouchableOpacity>
+                ) : (
+                    <Button
+                        backgroundColor={buttonColor}
+                        borderColor="white"
+                        borderRadius="m"
+                        borderWidth={2}
+                        onPress={() => { onPlant(habit.id); }}
+                        paddingHorizontal="l"
+                        paddingVertical="s"
+                        textColor="white"
+                        title={buttonText}
+                    />
+                )}
             </Box>
         </Pressable>
     );

@@ -119,23 +119,27 @@ export function HabitsScreen() {
                         {/* Header */}
                         <Box
                             backgroundColor="farmBorderDark"
+                            borderRadius='m'
                             flexDirection="row"
                             justifyContent="space-between"
+                            marginBottom='m'
                             padding="m"
                         >
                             <Text color="white" fontSize={12} fontWeight="700">
                                 THÓI QUEN
                             </Text>
-                            <Box flexDirection="row" gap="xs">
-                                {DAYS_OF_WEEK.map((day) => (
-                                    <Text color="white" fontSize={10} key={day}>
-                                        {day}
-                                    </Text>
-                                ))}
+                            <Box alignItems='center' flexDirection="row" gap="xxl">
+                                <Box flexDirection="row" gap="xs">
+                                    {DAYS_OF_WEEK.map((day) => (
+                                        <Text color="white" fontSize={10} key={day}>
+                                            {day}
+                                        </Text>
+                                    ))}
+                                </Box>
+                                <Text color="white" fontSize={12} fontWeight="700">
+                                    CHUỖI
+                                </Text>
                             </Box>
-                            <Text color="white" fontSize={12} fontWeight="700">
-                                CHUỖI
-                            </Text>
                         </Box>
 
                         {/* Habit Rows */}
@@ -205,7 +209,7 @@ export function HabitsScreen() {
 
     return (
         <LinearGradient
-            colors={['#2d5a27', '#3a7332']}
+            colors={['#8d6e63', '#8d6e63']}
             style={styles.container}
         >
             <StatusBar

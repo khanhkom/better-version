@@ -58,9 +58,9 @@ export function WeeklyProgressGrid({ completionDates }: WeeklyProgressGridProps)
                     <Box
                         backgroundColor={isCompleted ? 'success' : 'cardBg'}
                         borderRadius="xs"
-                        height={20}
+                        height={12}
                         key={date}
-                        width={20}
+                        width={12}
                     />
                 );
             })}

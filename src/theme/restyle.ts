@@ -34,10 +34,32 @@ const palette = {
   progressBgPink: '#3D1928',
   progressBgYellow: '#3D3419',
   progressPink: '#FF1B7C',
-
   progressYellow: '#FFD700',
   transparent: 'transparent',
   white: '#FFFFFF',
+
+  // Farm theme colors
+  farmBoard: '#4caf50',
+  farmBorder: '#5d4037',
+  farmBorderDark: '#3e2723',
+  farmCardBg: '#8d6e63',
+  farmCardBgLight: '#d7ccc8',
+  farmGradientEnd: '#3a7332',
+  farmGradientStart: '#2d5a27',
+
+  // Feature-specific colors
+  breakGreen: '#66bb6a',
+  focusRed: '#ef5350',
+  gold: '#ffd700',
+  highlightOrange: '#ff9800',
+  highlightYellow: '#ffb300',
+  storageCyan: '#56ccf2',
+
+  // Crop colors
+  cropCarrot: '#ff8c00',
+  cropCorn: '#ffeb3b',
+  cropTomato: '#ff6347',
+  cropWatermelon: '#e91e63',
 };
 
 const theme = createTheme({
@@ -111,6 +133,29 @@ const theme = createTheme({
       borderWidth: 2,
       padding: 'l',
     },
+    // Farm variants
+    farmButton: {
+      backgroundColor: 'farmCardBgLight',
+      borderColor: 'farmBorder',
+      borderRadius: 'xl',
+      borderWidth: 2,
+      padding: 'm',
+    },
+    farmModal: {
+      backgroundColor: 'farmCardBg',
+      borderColor: 'farmBorderDark',
+      borderRadius: 'xxl',
+      borderWidth: 8,
+      padding: 'l',
+    },
+    farmPlot: {
+      aspectRatio: 1,
+      backgroundColor: 'farmBoard',
+      borderColor: 'farmBorder',
+      borderRadius: 'l',
+      borderWidth: 4,
+      padding: 's',
+    },
   },
   colors: {
     ...palette,
@@ -168,6 +213,25 @@ const theme = createTheme({
       color: 'textPrimary',
       fontSize: 16,
       fontWeight: '600',
+    },
+    // Farm variants
+    farmLabel: {
+      color: 'farmCardBgLight',
+      fontSize: 14,
+      fontWeight: '600',
+    },
+    pixelBody: {
+      color: 'textPrimary',
+      fontSize: 12,
+      fontWeight: '700',
+      letterSpacing: 1,
+    },
+    pixelHeader: {
+      color: 'textPrimary',
+      fontSize: 20,
+      fontWeight: '700',
+      letterSpacing: 1,
+      textTransform: 'uppercase',
     },
   },
 });

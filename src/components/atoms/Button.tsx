@@ -1,22 +1,24 @@
-import React from 'react';
-import { TouchableOpacity, type TouchableOpacityProps } from 'react-native';
+import type { Theme } from '@/theme/restyle';
+
 import {
+  backgroundColor,
+  type BackgroundColorProps,
+  border,
+  type BorderProps,
   createRestyleComponent,
   createVariant,
   spacing,
-  border,
-  backgroundColor,
   type SpacingProps,
-  type BorderProps,
-  type BackgroundColorProps,
   type VariantProps,
 } from '@shopify/restyle';
-import type { Theme } from '@/theme/restyle';
+import React from 'react';
+import { TouchableOpacity, type TouchableOpacityProps } from 'react-native';
+
 import Text from './Text';
 
-type RestyleProps = SpacingProps<Theme> &
+type RestyleProps = BackgroundColorProps<Theme> &
   BorderProps<Theme> &
-  BackgroundColorProps<Theme> &
+  SpacingProps<Theme> &
   VariantProps<Theme, 'buttonVariants'>;
 
 const ButtonContainer = createRestyleComponent<
@@ -32,20 +34,20 @@ const ButtonContainer = createRestyleComponent<
   TouchableOpacity,
 );
 
-type ButtonProps = RestyleProps &
-  TouchableOpacityProps & {
-    title: string;
-    textColor?: keyof Theme['colors'];
-  };
+type ButtonProps = {
+  readonly textColor?: keyof Theme['colors'];
+  readonly title: string;
+} &
+  RestyleProps & TouchableOpacityProps;
 
 const Button: React.FC<ButtonProps> = ({
-  title,
   textColor = 'textPrimary',
+  title,
   ...rest
 }) => {
   return (
     <ButtonContainer {...rest}>
-      <Text variant="title" color={textColor}>
+      <Text color={textColor} variant="title">
         {title}
       </Text>
     </ButtonContainer>

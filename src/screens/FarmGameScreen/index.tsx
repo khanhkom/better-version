@@ -21,7 +21,13 @@ import { ShopModal } from '@/components/organisms/ShopModal';
 
 import { useGameStore } from '@/stores/gameStore';
 
-import { FarmGrid, FarmHeader } from './components';
+import {
+    ExpansionArea,
+    FarmGrid,
+    FarmHeader,
+    PomodoroButton,
+    PomodoroMiniTimer,
+} from './components';
 
 export function FarmGameScreen() {
     const { handlePlantCrop, handlePlotClick, plots } = useFarm();
@@ -81,7 +87,16 @@ export function FarmGameScreen() {
             <SafeAreaView style={styles.safeArea}>
                 <FarmHeader />
 
-                <FarmGrid onPlotPress={handlePlotPress} plots={plots} />
+                {/* Farm Grid with Expansion Area */}
+                <Box flex={1} position="relative">
+                    <FarmGrid onPlotPress={handlePlotPress} plots={plots} />
+
+                    {/* Expansion Area - Bottom Left */}
+                    <Box bottom={20} left={20} position="absolute">
+                        <ExpansionArea onPress={() => { }} />
+                    </Box>
+                    <PomodoroMiniTimer onPress={handlePomodoroPress} />
+                </Box>
 
                 {/* Status text */}
                 <Box alignItems="center" backgroundColor="farmCardBg" padding="s">
@@ -96,6 +111,8 @@ export function FarmGameScreen() {
                     onPomodoroPress={handlePomodoroPress}
                     onShopPress={handleShopPress}
                 />
+
+                {/* Mini Timer when Pomodoro is running */}
 
                 {/* Modals */}
                 <HabitModal

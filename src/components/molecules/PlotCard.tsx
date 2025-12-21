@@ -53,7 +53,9 @@ export function PlotCard({ onPress, plot, testID = undefined }: PlotCardProps) {
     <Pressable onPress={onPress} testID={testID}>
       <Card
         alignItems="center"
+        height="100%"
         justifyContent="center"
+        width="100%"
       >
         {/* Empty plot */}
         {plot.status === 'EMPTY' && (

@@ -1,17 +1,19 @@
-import React from 'react';
-import Box from '../atoms/Box';
-import Text from '../atoms/Text';
 import type { Theme } from '@/theme/restyle';
 
-type StatCardVariant = 'gold' | 'blue' | 'orange';
+import React from 'react';
 
-interface StatCardProps {
-  icon: React.ReactNode;
-  value: string | number;
-  label: string;
-  variant?: StatCardVariant;
-  borderColor?: keyof Theme['colors'];
-}
+import Box from '../atoms/Box';
+import Text from '../atoms/Text';
+
+type StatCardProps = {
+  readonly borderColor?: keyof Theme['colors'];
+  readonly icon: React.ReactNode;
+  readonly label?: string;
+  readonly value: number | string;
+  readonly variant?: StatCardVariant;
+};
+
+type StatCardVariant = 'blue' | 'gold' | 'orange';
 
 const variantConfig: Record<
   StatCardVariant,
@@ -20,13 +22,13 @@ const variantConfig: Record<
     iconColor: keyof Theme['colors'];
   }
 > = {
-  gold: {
-    iconBgColor: 'iconBgGold',
-    iconColor: 'secondary',
-  },
   blue: {
     iconBgColor: 'iconBgBlue',
     iconColor: 'primary',
+  },
+  gold: {
+    iconBgColor: 'iconBgGold',
+    iconColor: 'secondary',
   },
   orange: {
     iconBgColor: 'iconBgOrange',
@@ -34,46 +36,77 @@ const variantConfig: Record<
   },
 };
 
-const StatCard: React.FC<StatCardProps> = ({
-  icon,
-  value,
-  label,
-  variant = 'gold',
+function StatCard({
   borderColor = 'borderPrimary',
-}) => {
+  icon,
+  label = undefined,
+  value,
+  variant = 'gold',
+}: StatCardProps) {
   const config = variantConfig[variant];
 
+  // Compact horizontal layout: icon left, value right
+  if (!label) {
+    return (
+      <Box
+        alignItems="center"
+        backgroundColor="cardPrimaryBackground"
+        borderColor={borderColor}
+        borderRadius="m"
+        borderWidth={2}
+        flexDirection="row"
+        gap="s"
+        padding="s"
+      >
+        <Box
+          alignItems="center"
+          backgroundColor={config.iconBgColor}
+          borderRadius="s"
+          height={32}
+          justifyContent="center"
+          width={32}
+        >
+          <Text fontSize={18}>{icon}</Text>
+        </Box>
+        <Text color={config.iconColor} fontSize={14} fontWeight="700" variant="stat">
+          {value}
+        </Text>
+      </Box>
+    );
+  }
+
+  // Original vertical layout with label (for backward compatibility)
   return (
     <Box
+      alignItems="center"
       backgroundColor="cardPrimaryBackground"
+      borderColor={borderColor}
       borderRadius="l"
       borderWidth={2}
-      borderColor={borderColor}
-      padding="l"
-      alignItems="center"
       minWidth={100}
+      padding="l"
     >
       <Box
+        alignItems="center"
         backgroundColor={config.iconBgColor}
         borderRadius="full"
-        width={48}
         height={48}
-        alignItems="center"
         justifyContent="center"
         marginBottom="m"
+        width={48}
       >
         {icon}
       </Box>
 
-      <Text variant="stat" marginBottom="xs">
+      <Text marginBottom="xs" variant="stat">
         {value}
       </Text>
 
-      <Text variant="label" color={config.iconColor}>
+      <Text color={config.iconColor} variant="label">
         {label}
       </Text>
     </Box>
   );
-};
+}
 
 export default StatCard;

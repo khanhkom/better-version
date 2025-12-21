@@ -8,6 +8,7 @@ import Button from '@/components/atoms/Button';
 import { CircularProgress } from '@/components/atoms/CircularProgress';
 import Text from '@/components/atoms/Text';
 import { ModalWrapper } from '@/components/organisms/ModalWrapper';
+import theme from '@/theme/restyle';
 
 import { POMODORO_DURATIONS } from '@/constants/game';
 import { useGameStore } from '@/stores/gameStore';
@@ -36,13 +37,13 @@ export function PomodoroModal({ onClose, visible }: PomodoroModalProps) {
   const getModeColor = () => {
     switch (pomodoro.mode) {
       case 'BREAK': {
-        return 'breakGreen';
+        return theme.colors.breakGreen;
       }
       case 'FOCUS': {
-        return 'focusRed';
+        return theme.colors.focusRed;
       }
       default: {
-        return 'cardBg';
+        return theme.colors.cardBg;
       }
     }
   };
@@ -111,7 +112,7 @@ export function PomodoroModal({ onClose, visible }: PomodoroModalProps) {
             title={pomodoro.isRunning ? '⏸️ Tạm Dừng' : '▶️ Tiếp Tục'}
           />
         </Box>
-        <Box width={80}>
+        <Box width={120}>
           <Button
             backgroundColor="danger"
             borderColor="farmBorder"

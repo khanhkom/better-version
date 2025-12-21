@@ -170,6 +170,7 @@ const theme = createTheme({
     xl: 20,
     xs: 4,
     xxl: 24,
+    xxs: 2,
     xxxl: 32,
   },
   textVariants: {

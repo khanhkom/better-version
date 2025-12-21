@@ -16,7 +16,10 @@ export type ToolType = 'DIG' | 'PLANT' | 'WATER' | null;
 export type PomodoroMode = 'BREAK' | 'FOCUS' | 'IDLE';
 
 /** Habit frequency */
-export type HabitFrequency = 'daily' | 'weekly';
+export type HabitFrequency = 'daily' | 'once' | 'weekly';
+
+/** Days of week for weekly habits */
+export type DayOfWeek = 'fri' | 'mon' | 'sat' | 'sun' | 'thu' | 'tue' | 'wed';
 
 /** Crop configuration */
 export type Crop = {
@@ -54,6 +57,7 @@ export type Habit = {
   reminderTime?: string; // Time in HH:mm format
   streak: number;
   title: string;
+  weeklyDays?: DayOfWeek[]; // Only for weekly frequency
   xpReward: number;
 };
 

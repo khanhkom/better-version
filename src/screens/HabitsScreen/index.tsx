@@ -3,7 +3,7 @@
  * Habit tracking screen with tabs for Tasks, Statistics, and Add
  */
 
-import type { Habit } from '@/types/game';
+import type { DayOfWeek, Habit } from '@/types/game';
 
 import { useState } from 'react';
 import { FlatList, SafeAreaView, StatusBar, StyleSheet } from 'react-native';
@@ -70,16 +70,20 @@ export function HabitsScreen() {
 
     const handleUpdateHabit = (data: {
         difficulty: 'easy' | 'hard' | 'medium';
+        frequency: 'daily' | 'once' | 'weekly';
         icon?: string;
         reminderTime?: string;
         title: string;
+        weeklyDays?: DayOfWeek[];
     }) => {
         if (editingHabit) {
             updateHabit(editingHabit.id, {
                 difficulty: data.difficulty,
+                frequency: data.frequency,
                 icon: data.icon,
                 reminderTime: data.reminderTime,
                 title: data.title,
+                weeklyDays: data.weeklyDays,
             });
             setShowEditModal(false);
             setEditingHabit(undefined);
@@ -88,17 +92,20 @@ export function HabitsScreen() {
 
     const handleAddHabit = (data: {
         difficulty: 'easy' | 'hard' | 'medium';
+        frequency: 'daily' | 'once' | 'weekly';
         icon?: string;
         reminderTime?: string;
         title: string;
+        weeklyDays?: DayOfWeek[];
     }) => {
         addHabit({
             difficulty: data.difficulty,
-            frequency: 'daily',
+            frequency: data.frequency,
             icon: data.icon,
             moneyReward: 0, // Will be calculated in store
             reminderTime: data.reminderTime,
             title: data.title,
+            weeklyDays: data.weeklyDays,
             xpReward: 0, // Will be calculated in store
         });
         setShowAddModal(false);
@@ -246,7 +253,15 @@ export function HabitsScreen() {
                 visible={showEditModal}
             >
                 {editingHabit ? (
-                    <EditHabitForm habit={editingHabit} onUpdate={handleUpdateHabit} />
+                    <EditHabitForm
+                        habit={editingHabit}
+                        onDelete={() => {
+                            handleDelete(editingHabit.id);
+                            setShowEditModal(false);
+                            setEditingHabit(undefined);
+                        }}
+                        onUpdate={handleUpdateHabit}
+                    />
                 ) : undefined}
             </ModalWrapper>
         </LinearGradient>

@@ -35,19 +35,28 @@ const ButtonContainer = createRestyleComponent<
 );
 
 type ButtonProps = {
+  readonly fontSize?: number;
+  readonly fontWeight?: '400' | '500' | '600' | '700' | '800' | '900';
   readonly textColor?: keyof Theme['colors'];
   readonly title: string;
 } &
   RestyleProps & TouchableOpacityProps;
 
 const Button: React.FC<ButtonProps> = ({
+  fontSize,
+  fontWeight,
   textColor = 'textPrimary',
   title,
   ...rest
 }) => {
   return (
     <ButtonContainer {...rest}>
-      <Text color={textColor} variant="title">
+      <Text
+        color={textColor}
+        fontSize={fontSize}
+        fontWeight={fontWeight}
+        variant="title"
+      >
         {title}
       </Text>
     </ButtonContainer>

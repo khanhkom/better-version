@@ -4,8 +4,9 @@
  */
 
 import { BlurView } from '@react-native-community/blur';
+import { X } from 'lucide-react-native';
 import { useEffect } from 'react';
-import { Modal, Pressable, StyleSheet, TouchableOpacity } from 'react-native';
+import { Modal, Pressable, StatusBar, StyleSheet, TouchableOpacity } from 'react-native';
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -55,6 +56,7 @@ export function ModalWrapper({
 
   return (
     <Modal animationType="fade" transparent visible={visible}>
+      <StatusBar backgroundColor="rgba(0,0,0,0.5)" barStyle="light-content" />
       <BlurView blurAmount={10} blurType="dark" style={styles.backdrop}>
         <Pressable onPress={onClose} style={styles.backdrop}>
           <Box alignItems="center" flex={1} justifyContent="center">
@@ -87,7 +89,7 @@ export function ModalWrapper({
                           justifyContent="center"
                           padding="xs"
                         >
-                          <Text fontSize={16}>❌</Text>
+                          <X color="white" size={20} />
                         </Box>
                       </TouchableOpacity>
                     </Box>

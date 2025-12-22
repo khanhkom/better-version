@@ -32,8 +32,8 @@ const TAB_COLORS = {
         border: '#2E7D32',
     },
     [Paths.Habits]: {
-        background: '#7B1FA2',
-        border: '#6A1B9A',
+        background: '#388E3C',
+        border: '#388E3C',
     },
     [Paths.Statistics]: {
         background: '#0097A7',
@@ -46,7 +46,7 @@ export function MainTabNavigator() {
         <Tab.Navigator
             initialRouteName={Paths.FarmGame}
             screenOptions={({ route }) => {
-                const colors = TAB_COLORS[route.name as keyof typeof TAB_COLORS];
+                const colors = TAB_COLORS[route.name];
 
                 return {
                     headerShown: false,

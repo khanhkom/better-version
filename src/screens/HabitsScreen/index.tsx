@@ -7,13 +7,15 @@ import type { DayOfWeek, Habit } from '@/types/game';
 
 import { useFocusEffect } from '@react-navigation/native';
 import { useCallback, useState } from 'react';
-import { FlatList, SafeAreaView, StatusBar, StyleSheet } from 'react-native';
+import { SafeAreaView, ScrollView, StatusBar, StyleSheet, View } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
+import Rive, { Fit, RiveGeneralEvent, RNRiveError, RNRiveErrorType, useRive } from 'rive-react-native';
 
 import Box from '@/components/atoms/Box';
 import Text from '@/components/atoms/Text';
 import { ModalWrapper } from '@/components/organisms/ModalWrapper';
 
+import { scaleHeight, scaleWidth } from '@/configs/functions';
 import { useGameStore } from '@/stores/gameStore';
 
 import {
@@ -34,6 +36,8 @@ export function HabitsScreen() {
     const [showAddModal, setShowAddModal] = useState(false);
     const [showEditModal, setShowEditModal] = useState(false);
     const [editingHabit, setEditingHabit] = useState<Habit | undefined>(undefined);
+
+    const [setRiveReference, riveReference] = useRive();
 
     // Update StatusBar color when screen is focused
     useFocusEffect(
@@ -113,40 +117,71 @@ export function HabitsScreen() {
         });
         setShowAddModal(false);
     };
-
+    //#0c2606
     return (
         <LinearGradient
-            colors={['#AB47BC', '#7B1FA2']}
+            colors={['#3e802f', '#3e802f']}
             style={styles.container}
         >
             <StatusBar
-                backgroundColor="#6A1B9A"
+                backgroundColor="#79c042"
                 barStyle="light-content"
             />
             <SafeAreaView style={styles.safeArea}>
-                {/* Header */}
-                <Box padding="m">
-                    <Text color="white" fontSize={24} fontWeight="700" mb="m">
-                        Nhiệm Vụ Hôm Nay
-                    </Text>
-                </Box>
+                <ScrollView
+                    contentContainerStyle={styles.scrollContent}
+                    showsVerticalScrollIndicator={false}
+                >
+                    <View style={{ height: scaleHeight(315) }}>
+                        <Rive
+                            artboardName="v_1 for Rive 2"
+                            autoplay
+                            fit={Fit.FitWidth}
+                            onError={(riveError: RNRiveError) => {
+                                switch (riveError.type) {
+                                    case RNRiveErrorType.DataBindingError: {
+                                        console.error(riveError.message);
+                                        return;
+                                    }
+                                    default: {
+                                        console.error('Unhandled error', riveError);
+                                        return;
+                                    }
+                                }
+                            }}
+                            onRiveEventReceived={(event: RiveGeneralEvent) => {
+                                console.log('event', event);
+                            }}
+                            onStateChanged={(stateMachineName: string) => {
+                                console.log('stateMachineName', stateMachineName);
+                            }}
+                            ref={setRiveReference}
+                            resourceName="nature"
+                            stateMachineName="Start"
+                            style={{ marginTop: -20, width: scaleWidth(375) }}
+                        // url="https://public.rive.app/community/runtime-files/2195-4346-avatar-pack-use-case.riv"
+                        />
+                    </View>
+                    {/* Header */}
+                    <Box padding="m">
+                        <Text color="white" fontSize={24} fontWeight="700" mb="m">
+                            Nhiệm Vụ Hôm Nay
+                        </Text>
+                    </Box>
 
-                {/* Content */}
-                <Box flex={1} padding="m">
-                    {habits.length === 0 ? (
-                        <Box alignItems="center" padding="l">
-                            <Text color="farmCardBgLight" fontSize={14} textAlign="center">
-                                📋 Chưa có nhiệm vụ nào
-                            </Text>
-                            <Text color="farmCardBgLight" fontSize={11} mt="xs" textAlign="center">
-                                Thêm nhiệm vụ để kiếm XP và phát triển nông trại
-                            </Text>
-                        </Box>
-                    ) : (
-                        <FlatList
-                            data={habits}
-                            keyExtractor={(item) => item.id}
-                            renderItem={({ item }) => {
+                    {/* Content */}
+                    <Box padding="m">
+                        {habits.length === 0 ? (
+                            <Box alignItems="center" padding="l">
+                                <Text color="farmCardBgLight" fontSize={14} textAlign="center">
+                                    📋 Chưa có nhiệm vụ nào
+                                </Text>
+                                <Text color="farmCardBgLight" fontSize={11} mt="xs" textAlign="center">
+                                    Thêm nhiệm vụ để kiếm XP và phát triển nông trại
+                                </Text>
+                            </Box>
+                        ) : (
+                            habits.map((item) => {
                                 // Check if completed today
                                 const today = new Date();
                                 today.setHours(0, 0, 0, 0);
@@ -157,16 +192,16 @@ export function HabitsScreen() {
                                     <TaskCard
                                         habit={item}
                                         isCompleted={isCompleted}
+                                        key={item.id}
                                         onDelete={handleDelete}
                                         onEdit={handleEdit}
                                         onPlant={handlePlant}
                                     />
                                 );
-                            }}
-                            showsVerticalScrollIndicator={false}
-                        />
-                    )}
-                </Box>
+                            })
+                        )}
+                    </Box>
+                </ScrollView>
 
                 {/* Floating Add Button */}
                 <FloatingButton onPress={() => { setShowAddModal(true); }} />
@@ -212,5 +247,8 @@ const styles = StyleSheet.create({
     },
     safeArea: {
         flex: 1,
+    },
+    scrollContent: {
+        flexGrow: 1,
     },
 });

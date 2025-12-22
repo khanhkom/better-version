@@ -224,16 +224,6 @@ export function HabitsScreen() {
                     {renderContent()}
                 </Box>
 
-                {/* Footer Message */}
-                <Box
-                    backgroundColor="farmBorderDark"
-                    padding="m"
-                >
-                    <Text color="farmCardBgLight" fontSize={12} textAlign="center">
-                        Duy trì chuỗi 🔥 để nhận thêm nhiều may mắn!
-                    </Text>
-                </Box>
-
                 {/* Floating Add Button */}
                 <FloatingButton onPress={() => { setShowAddModal(true); }} />
             </SafeAreaView>

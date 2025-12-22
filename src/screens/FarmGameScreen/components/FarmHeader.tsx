@@ -125,7 +125,9 @@ function ActionButton({ backgroundColor, icon, label, onPress }: ActionButtonPro
             <Box
                 alignItems="center"
                 backgroundColor={backgroundColor}
+                borderColor="white"
                 borderRadius="s"
+                borderWidth={2}
                 flexDirection="row"
                 gap="xs"
                 paddingHorizontal="m"

@@ -5,7 +5,15 @@
 
 import type { LandPlot } from '@/types/game';
 
+import { useEffect } from 'react';
 import { ImageBackground } from 'react-native';
+import Animated, {
+    useAnimatedStyle,
+    useSharedValue,
+    withRepeat,
+    withSequence,
+    withTiming,
+} from 'react-native-reanimated';
 
 import Box from '@/components/atoms/Box';
 import { PlotCard } from '@/components/molecules/PlotCard';
@@ -15,8 +23,12 @@ import { scaleWidth } from '@/configs/functions';
 
 import { ExpansionArea } from './ExpansionArea';
 
+const AnimatedImageBackground = Animated.createAnimatedComponent(ImageBackground);
+
 const PLOT_SIZE = scaleWidth(46);
 const PLOTS_PER_ROW = 6;
+const FLOAT_DISTANCE = 8;
+const FLOAT_DURATION = 2000;
 
 type FarmGridProps = {
     readonly onExpansionPress: () => void;
@@ -25,6 +37,39 @@ type FarmGridProps = {
 };
 
 export function FarmGrid({ onExpansionPress, onPlotPress, plots }: FarmGridProps) {
+    // Floating animation
+    const translateY = useSharedValue(0);
+    const rotate = useSharedValue(0);
+
+    useEffect(() => {
+        // Vertical floating
+        translateY.value = withRepeat(
+            withSequence(
+                withTiming(-FLOAT_DISTANCE, { duration: FLOAT_DURATION }),
+                withTiming(FLOAT_DISTANCE, { duration: FLOAT_DURATION })
+            ),
+            -1,
+            true
+        );
+
+        // Subtle rotation
+        rotate.value = withRepeat(
+            withSequence(
+                withTiming(1, { duration: FLOAT_DURATION * 2 }),
+                withTiming(-1, { duration: FLOAT_DURATION * 2 })
+            ),
+            -1,
+            true
+        );
+    }, [translateY, rotate]);
+
+    const floatingStyle = useAnimatedStyle(() => ({
+        transform: [
+            { translateY: translateY.value },
+            { rotate: `${rotate.value}deg` },
+        ],
+    }));
+
     // Group plots into rows of 6
     const rows: LandPlot[][] = [];
     for (let index = 0; index < plots.length; index += PLOTS_PER_ROW) {
@@ -32,14 +77,19 @@ export function FarmGrid({ onExpansionPress, onPlotPress, plots }: FarmGridProps
     }
 
     return (
-        <ImageBackground
+        <AnimatedImageBackground
             borderRadius={12}
             resizeMode='stretch'
             source={images.farm.backgroundFarm}
-            style={{
-                borderRadius: 12, height: 180, paddingVertical: 16,
-                width: scaleWidth(380)
-            }}
+            style={[
+                {
+                    borderRadius: 12,
+                    height: 180,
+                    paddingVertical: 16,
+                    width: scaleWidth(380),
+                },
+                floatingStyle,
+            ]}
         >
             <Box flex={1} padding="m">
                 <Box gap="m">
@@ -64,7 +114,7 @@ export function FarmGrid({ onExpansionPress, onPlotPress, plots }: FarmGridProps
                     </Box>
                 </Box>
             </Box>
-        </ImageBackground>
+        </AnimatedImageBackground>
     );
 }
 

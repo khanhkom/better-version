@@ -16,7 +16,6 @@ type TabNavigationProps = {
 export function TabNavigation({ activeTab, onTabChange }: TabNavigationProps) {
     return (
         <Box
-            backgroundColor="farmCardBg"
             flexDirection="row"
             gap="s"
             padding="m"

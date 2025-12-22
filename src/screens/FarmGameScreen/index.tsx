@@ -84,11 +84,11 @@ export function FarmGameScreen() {
             colors={['#66bb6a', '#66bb6a']}
             style={styles.container}
         >
+            <StatusBar
+                backgroundColor="#66bb6a"
+                barStyle="light-content"
+            />
             <SafeAreaView style={styles.safeArea}>
-                <StatusBar
-                    backgroundColor="#66bb6a"
-                    barStyle="light-content"
-                />
                 <FarmHeader
                     onPomodoroPress={handlePomodoroPress}
                     onShopPress={handleShopPress}
@@ -103,14 +103,6 @@ export function FarmGameScreen() {
                         plots={plots}
                     />
                 </Box>
-
-                {/* Status text */}
-                <Box alignItems="center" backgroundColor="farmCardBg" padding="s">
-                    <Text color="textPrimary" fontSize={11} textAlign="center">
-                        🌱 Tap EMPTY plots to plant • Tap READY to harvest
-                    </Text>
-                </Box>
-
                 {/* Mini Timer when Pomodoro is running */}
                 <PomodoroMiniTimer onPress={handlePomodoroPress} />
 

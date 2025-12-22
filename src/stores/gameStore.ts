@@ -7,7 +7,7 @@ import type {
   CropId,
   GameState,
   Habit,
-  HabitFrequency,
+  LandPlot,
   PomodoroMode,
   ToolType,
 } from '@/types/game';
@@ -18,7 +18,6 @@ import { createJSONStorage, persist } from 'zustand/middleware';
 
 import {
   CROPS,
-  HABIT_XP_REWARD,
   INITIAL_INVENTORY,
   INITIAL_PLAYER_STATS,
   INITIAL_PLOTS,
@@ -60,6 +59,7 @@ type GameStore = {
   purchasePlot: () => boolean;
   selectTool: (tool: ToolType) => void;
   updatePlotProgress: (plotId: string, progress: number) => void;
+  updatePlotStage: (plotId: string, stage: number) => void;
 
   // Inventory actions
   addHarvest: (cropId: CropId, quantity: number) => void;
@@ -190,6 +190,7 @@ export const useGameStore = create<GameStore>()(
               ? {
                   ...p,
                   cropId: undefined,
+                  currentStage: undefined,
                   plantedAt: undefined,
                   progress: 0,
                   status: 'EMPTY' as const,
@@ -214,6 +215,7 @@ export const useGameStore = create<GameStore>()(
               ? {
                   ...p,
                   cropId,
+                  currentStage: 0,
                   plantedAt: Date.now(),
                   progress: 0,
                   status: 'PLANTED' as const,
@@ -253,6 +255,14 @@ export const useGameStore = create<GameStore>()(
         set((state) => ({
           plots: state.plots.map((p) =>
             p.id === plotId ? { ...p, progress } : p,
+          ),
+        }));
+      },
+
+      updatePlotStage: (plotId, stage) => {
+        set((state) => ({
+          plots: state.plots.map((p) =>
+            p.id === plotId ? { ...p, currentStage: stage } : p,
           ),
         }));
       },

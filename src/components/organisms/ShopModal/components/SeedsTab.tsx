@@ -12,6 +12,7 @@ import Box from '@/components/atoms/Box';
 import Button from '@/components/atoms/Button';
 import { Emoji } from '@/components/atoms/Emoji';
 import Text from '@/components/atoms/Text';
+import { FloatingMoney } from '@/components/molecules/FloatingMoney';
 import { QuantityModal } from '@/components/organisms/QuantityModal';
 
 import { CROPS } from '@/constants/game';
@@ -28,6 +29,8 @@ export function SeedsTab({ money, onBuySeed }: SeedsTabProps) {
   const crops = Object.values(CROPS);
   const [selectedCrop, setSelectedCrop] = useState<Crop | null>(crops[0] || null);
   const [showQuantityModal, setShowQuantityModal] = useState(false);
+  const [floatingMoneyVisible, setFloatingMoneyVisible] = useState(false);
+  const [floatingMoneyAmount, setFloatingMoneyAmount] = useState(0);
 
   const handleSelectCrop = (crop: Crop) => {
     setSelectedCrop(crop);
@@ -41,10 +44,17 @@ export function SeedsTab({ money, onBuySeed }: SeedsTabProps) {
 
   const handleConfirmBuy = (quantity: number) => {
     if (selectedCrop) {
+      const totalCost = selectedCrop.buyPrice * quantity;
+
       // Call onBuySeed multiple times or update to accept quantity
       for (let index = 0; index < quantity; index++) {
         onBuySeed(selectedCrop.id);
       }
+
+      // Show floating money animation
+      setFloatingMoneyAmount(totalCost);
+      setFloatingMoneyVisible(true);
+
       setShowQuantityModal(false);
     }
   };
@@ -150,6 +160,16 @@ export function SeedsTab({ money, onBuySeed }: SeedsTabProps) {
           visible={showQuantityModal}
         />
       ) : undefined}
+
+      {/* Floating Money Animation */}
+      <FloatingMoney
+        amount={floatingMoneyAmount}
+        onComplete={() => {
+          setFloatingMoneyVisible(false);
+        }}
+        type="loss"
+        visible={floatingMoneyVisible}
+      />
     </Box>
   );
 }

@@ -3,7 +3,8 @@
     "allow": [
       "Bash(tree:*)",
       "Bash(Get-Date -UFormat \"%y%m%d\")",
-      "Bash(npm run type-check:*)"
+      "Bash(npm run type-check:*)",
+      "Bash(npx tsc:*)"
     ],
     "deny": [],
     "ask": []

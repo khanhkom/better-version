@@ -13,6 +13,8 @@ import Button from '@/components/atoms/Button';
 import { Emoji } from '@/components/atoms/Emoji';
 import Text from '@/components/atoms/Text';
 
+import { FloatingMoney } from '@/components/molecules/FloatingMoney';
+
 import { CROPS } from '@/constants/game';
 
 type StorageTabProps = {
@@ -26,6 +28,8 @@ export function StorageTab({ harvested, onSellHarvest }: StorageTabProps) {
   const [selectedCrop, setSelectedCrop] = useState<Crop | undefined>(
     harvestedCrops[0]
   );
+  const [floatingMoneyVisible, setFloatingMoneyVisible] = useState(false);
+  const [floatingMoneyAmount, setFloatingMoneyAmount] = useState(0);
 
   if (harvestedCrops.length === 0) {
     return (
@@ -46,7 +50,13 @@ export function StorageTab({ harvested, onSellHarvest }: StorageTabProps) {
 
   const handleSell = () => {
     if (selectedCrop && harvested[selectedCrop.id] > 0) {
+      const revenue = selectedCrop.sellPrice;
+
       onSellHarvest(selectedCrop.id);
+
+      // Show floating money animation
+      setFloatingMoneyAmount(revenue);
+      setFloatingMoneyVisible(true);
     }
   };
 
@@ -151,6 +161,16 @@ export function StorageTab({ harvested, onSellHarvest }: StorageTabProps) {
           </Box>
         </Box>
       ) : undefined}
+
+      {/* Floating Money Animation */}
+      <FloatingMoney
+        amount={floatingMoneyAmount}
+        onComplete={() => {
+          setFloatingMoneyVisible(false);
+        }}
+        type="gain"
+        visible={floatingMoneyVisible}
+      />
     </Box>
   );
 }

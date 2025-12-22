@@ -9,6 +9,13 @@ export type CropId = 'carrot' | 'corn' | 'tomato' | 'watermelon';
 /** Plot status states */
 export type PlotStatus = 'EMPTY' | 'PLANTED' | 'READY';
 
+/** Crop growth stage */
+export type CropStage = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  image: any; // ImageSourcePropType from react-native
+  stageNumber: number;
+};
+
 /** Tool types */
 export type ToolType = 'DIG' | 'PLANT' | 'WATER' | null;
 
@@ -29,12 +36,14 @@ export type Crop = {
   id: CropId;
   name: string;
   sellPrice: number;
+  stages: CropStage[]; // Growth stage images
   xpReward: number;
 };
 
 /** Land plot */
 export type LandPlot = {
   cropId?: CropId;
+  currentStage?: number; // Current growth stage index
   id: string;
   plantedAt?: number; // Unix timestamp (ms)
   progress: number; // 0-100

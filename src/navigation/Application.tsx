@@ -11,6 +11,7 @@ import RestyleThemeProvider from '@/theme/ThemeProvider/RestyleThemeProvider';
 
 import { Example, ProfileExample, Startup } from '@/screens';
 
+
 const Stack = createStackNavigator<RootStackParamList>();
 
 function ApplicationNavigator() {

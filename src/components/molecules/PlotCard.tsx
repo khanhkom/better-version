@@ -6,7 +6,7 @@
 import type { LandPlot } from '@/types/game';
 
 import { useEffect, useState } from 'react';
-import { ImageBackground, Pressable } from 'react-native';
+import { Image, ImageBackground, Pressable } from 'react-native';
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -63,13 +63,13 @@ export function PlotCard({ onPress, plot, testID = undefined }: PlotCardProps) {
   useEffect(() => {
     bounceScale.value = plot.status === 'READY'
       ? withRepeat(
-          withSequence(
-            withSpring(BOUNCE_SCALE, { damping: 2, stiffness: 100 }),
-            withSpring(1, { damping: 2, stiffness: 100 })
-          ),
-          -1,
-          false
-        )
+        withSequence(
+          withSpring(BOUNCE_SCALE, { damping: 2, stiffness: 100 }),
+          withSpring(1, { damping: 2, stiffness: 100 })
+        ),
+        -1,
+        false
+      )
       : withTiming(1, { duration: 200 });
   }, [plot.status, bounceScale]);
 
@@ -141,72 +141,80 @@ export function PlotCard({ onPress, plot, testID = undefined }: PlotCardProps) {
 
   return (
     <Pressable onPress={handlePress} testID={testID}>
-        <ImageBackground
-          borderRadius={8}
-          resizeMode="stretch"
-          source={images.farm.oDat}
-          style={{ borderRadius: 12, height: '100%', width: '100%' }}
+      <ImageBackground
+        borderRadius={8}
+        resizeMode="stretch"
+        source={images.farm.oDat}
+        style={{ borderRadius: 12, height: '100%', width: '100%' }}
+      >
+        <Card
+          alignItems="center"
+          backgroundColor="transparent"
+          height="100%"
+          justifyContent="center"
+          width="100%"
         >
-          <Card
-            alignItems="center"
-            backgroundColor="transparent"
-            height="100%"
-            justifyContent="center"
-            width="100%"
-          >
-            {/* Empty plot */}
-            {plot.status === 'EMPTY' && (
-              <Box alignItems="center" opacity={0.5}>
-                <Emoji size={24} symbol="🌱" />
-              </Box>
-            )}
+          {/* Empty plot */}
+          {plot.status === 'EMPTY' && (
+            <Box alignItems="center" opacity={0.5}>
+              {/* <Emoji size={24} symbol="🌱" /> */}
+            </Box>
+          )}
 
-            {/* Planted crop with progress */}
-            {plot.status === 'PLANTED' && crop ? (
-              <Box alignItems="center" width="100%">
-                <Animated.View style={swayStyle}>
-                  <Emoji size={24} symbol={crop.icon} />
-                </Animated.View>
-                <Box mt="s" width="80%">
-                  {/* Custom progress bar */}
+          {/* Planted crop with progress */}
+          {plot.status === 'PLANTED' && crop && plot.currentStage !== undefined ? (
+            <Box alignItems="center" width="100%">
+              <Animated.View style={swayStyle}>
+                <Image
+                  resizeMode="contain"
+                  source={crop.stages.at(plot.currentStage)?.image}
+                  style={{ height: 32, width: 32 }}
+                />
+              </Animated.View>
+              <Box mt="s" width="80%">
+                {/* Custom progress bar */}
+                <Box
+                  backgroundColor="farmBorder"
+                  borderRadius="full"
+                  height={4}
+                  overflow="hidden"
+                >
                   <Box
-                    backgroundColor="farmBorder"
+                    backgroundColor="highlightYellow"
                     borderRadius="full"
-                    height={4}
-                    overflow="hidden"
-                  >
-                    <Box
-                      backgroundColor="highlightYellow"
-                      borderRadius="full"
-                      height="100%"
-                      width={`${Math.min(MAX_PROGRESS, Math.max(0, plot.progress))}%`}
-                    />
-                  </Box>
+                    height="100%"
+                    width={`${Math.min(MAX_PROGRESS, Math.max(0, plot.progress))}%`}
+                  />
                 </Box>
               </Box>
-            ) : undefined}
+            </Box>
+          ) : undefined}
 
-            {/* Ready to harvest */}
-            {plot.status === 'READY' && crop ? (
-              <Box alignItems="center">
-                <Animated.View style={isHarvesting ? harvestStyle : bounceStyle}>
-                  <Emoji size={24} symbol={crop.icon} />
-                </Animated.View>
-                {isHarvesting ? (
-                  <Animated.View style={[rewardStyle, { position: 'absolute', top: 30 }]}>
-                    <Text color="success" fontSize={12} fontWeight="800">
-                      +{crop.sellPrice} 🪙
-                    </Text>
-                  </Animated.View>
-                ) : (
-                  <Text color="highlightYellow" fontSize={10} fontWeight="700" mt="s">
-                    READY!
+          {/* Ready to harvest */}
+          {plot.status === 'READY' && crop && plot.currentStage !== undefined ? (
+            <Box alignItems="center">
+              <Animated.View style={isHarvesting ? harvestStyle : bounceStyle}>
+                <Image
+                  resizeMode="contain"
+                  source={crop.stages.at(-1)?.image}
+                  style={{ height: 40, width: 40 }}
+                />
+              </Animated.View>
+              {isHarvesting ? (
+                <Animated.View style={[rewardStyle, { position: 'absolute', top: 30 }]}>
+                  <Text color="success" fontSize={12} fontWeight="800">
+                    +{crop.sellPrice} 🪙
                   </Text>
-                )}
-              </Box>
-            ) : undefined}
-          </Card>
-        </ImageBackground>
+                </Animated.View>
+              ) : (
+                <Text color="highlightYellow" fontSize={10} fontWeight="700">
+                  READY!
+                </Text>
+              )}
+            </Box>
+          ) : undefined}
+        </Card>
+      </ImageBackground>
     </Pressable>
   );
 }

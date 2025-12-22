@@ -5,42 +5,69 @@
 
 import type { Crop, CropId, LandPlot } from '@/types/game';
 
+import { cropImages } from '@/assets/images';
+
+const SECONDS_PER_MINUTE = 60;
+
+const CROP_GROWTH_MINUTES = {
+  carrot: 5,
+  corn: 10,
+  tomato: 3,
+  watermelon: 15,
+} as const;
+
 /** Crop configurations */
 export const CROPS: Record<CropId, Crop> = {
   carrot: {
     buyPrice: 15,
-    growthTime: 5, // 5 seconds (test mode)
+    growthTime: CROP_GROWTH_MINUTES.carrot * SECONDS_PER_MINUTE, // 5 phút
     icon: '🥕',
     id: 'carrot',
     name: 'Cà rốt',
     sellPrice: 35,
+    stages: cropImages.carrot.map((image, index) => ({
+      image,
+      stageNumber: index + 1,
+    })),
     xpReward: 20,
   },
   corn: {
     buyPrice: 25,
-    growthTime: 10, // 10 seconds (test mode)
+    growthTime: CROP_GROWTH_MINUTES.corn * SECONDS_PER_MINUTE, // 10 phút
     icon: '🌽',
     id: 'corn',
     name: 'Ngô',
     sellPrice: 60,
+    stages: cropImages.corn.map((image, index) => ({
+      image,
+      stageNumber: index + 1,
+    })),
     xpReward: 30,
   },
   tomato: {
     buyPrice: 10,
-    growthTime: 3, // 3 seconds (test mode)
+    growthTime: CROP_GROWTH_MINUTES.tomato * SECONDS_PER_MINUTE, // 3 phút
     icon: '🍅',
     id: 'tomato',
     name: 'Cà chua',
     sellPrice: 25,
+    stages: cropImages.tomato.map((image, index) => ({
+      image,
+      stageNumber: index + 1,
+    })),
     xpReward: 15,
   },
   watermelon: {
     buyPrice: 40,
-    growthTime: 15, // 15 seconds (test mode)
+    growthTime: CROP_GROWTH_MINUTES.watermelon * SECONDS_PER_MINUTE, // 15 phút
     icon: '🍉',
     id: 'watermelon',
     name: 'Dưa hấu',
     sellPrice: 100,
+    stages: cropImages.watermelon.map((image, index) => ({
+      image,
+      stageNumber: index + 1,
+    })),
     xpReward: 50,
   },
 };

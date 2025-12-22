@@ -39,7 +39,7 @@ export function FarmGameScreen() {
     const [showCropSelector, setShowCropSelector] = useState(false);
     const [selectedPlotId, setSelectedPlotId] = useState<string | undefined>(undefined);
     const [showPurchaseModal, setShowPurchaseModal] = useState(false);
-    const [selectedCropForPlanting, setSelectedCropForPlanting] = useState<CropId | null>(null);
+    const [selectedCropForPlanting, setSelectedCropForPlanting] = useState<CropId | undefined>(undefined);
 
     // Update StatusBar color when screen is focused
     useFocusEffect(
@@ -60,22 +60,33 @@ export function FarmGameScreen() {
         if (plot.status === 'READY') {
             handlePlotClick(plotId);
         } else if (plot.status === 'EMPTY') {
-            setSelectedPlotId(plotId);
-            setShowCropSelector(true);
+            // If a crop is already selected (continuous mode), plant it directly
+            if (selectedCropForPlanting) {
+                handlePlantCrop(plotId, selectedCropForPlanting);
+            } else {
+                // First time: show crop selector modal
+                setSelectedPlotId(plotId);
+                setShowCropSelector(true);
+            }
         }
-    }, [plots, handlePlotClick]);
+    }, [plots, handlePlotClick, selectedCropForPlanting, handlePlantCrop]);
 
     const handleCropSelect = useCallback((cropId: CropId) => {
         if (selectedPlotId) {
+            // Plant the crop in the first selected plot
             handlePlantCrop(selectedPlotId, cropId);
-            setShowCropSelector(false);
             setSelectedPlotId(undefined);
+
+            // Enter continuous planting mode
+            setSelectedCropForPlanting(cropId);
+            // Keep modal open for continuous planting
         }
     }, [selectedPlotId, handlePlantCrop]);
 
     const handleCropSelectorClose = useCallback(() => {
         setShowCropSelector(false);
         setSelectedPlotId(undefined);
+        setSelectedCropForPlanting(undefined); // Exit continuous mode
     }, []);
 
     const handlePomodoroPress = useCallback(() => {
@@ -167,6 +178,7 @@ export function FarmGameScreen() {
                 <CropSelector
                     onClose={handleCropSelectorClose}
                     onSelect={handleCropSelect}
+                    selectedCropId={selectedCropForPlanting}
                     visible={showCropSelector}
                 />
 

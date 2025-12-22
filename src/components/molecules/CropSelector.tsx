@@ -5,7 +5,7 @@
 
 import type { CropId } from '@/types/game';
 
-import { X } from 'lucide-react-native';
+import { Check, X } from 'lucide-react-native';
 import { Modal, Pressable, StyleSheet, TouchableOpacity } from 'react-native';
 
 import Box from '@/components/atoms/Box';
@@ -21,20 +21,26 @@ const DISABLED_OPACITY = 0.5;
 type CropSelectorProps = {
   readonly onClose: () => void;
   readonly onSelect: (cropId: CropId) => void;
+  readonly selectedCropId?: CropId; // For continuous planting mode
   readonly visible: boolean;
 };
 
 export function CropSelector({
   onClose,
   onSelect,
+  selectedCropId,
   visible,
 }: CropSelectorProps) {
   const inventory = useGameStore((state) => state.inventory);
+  const isContinuousMode = selectedCropId !== undefined;
 
   const handleSelect = (cropId: CropId) => {
     if (inventory[cropId] > 0) {
       onSelect(cropId);
-      onClose();
+      // In continuous mode, keep modal open
+      if (!isContinuousMode) {
+        onClose();
+      }
     }
   };
 
@@ -59,17 +65,21 @@ export function CropSelector({
                 mb="m"
               >
                 <Text fontSize={18} fontWeight="700" variant="pixelHeader">
-                  🌱 Chọn Giống
+                  {isContinuousMode ? '🌱 Gieo Liên Tục' : '🌱 Chọn Giống'}
                 </Text>
                 <TouchableOpacity onPress={onClose}>
                   <Box
                     alignItems="center"
-                    backgroundColor="danger"
+                    backgroundColor={isContinuousMode ? 'success' : 'danger'}
                     borderRadius="s"
                     justifyContent="center"
                     padding="xs"
                   >
-                    <X color="white" size={20} />
+                    {isContinuousMode ? (
+                      <Check color="white" size={20} />
+                    ) : (
+                      <X color="white" size={20} />
+                    )}
                   </Box>
                 </TouchableOpacity>
               </Box>
@@ -79,6 +89,7 @@ export function CropSelector({
                 {Object.values(CROPS).map((crop) => {
                   const available = inventory[crop.id];
                   const isDisabled = available === 0;
+                  const isSelected = isContinuousMode && selectedCropId === crop.id;
 
                   return (
                     <Pressable
@@ -88,10 +99,22 @@ export function CropSelector({
                     >
                       <Box
                         alignItems="center"
-                        backgroundColor={isDisabled ? 'cardBg' : 'farmCardBgLight'}
-                        borderColor={isDisabled ? 'borderDefault' : 'farmBorder'}
+                        backgroundColor={
+                          isDisabled
+                            ? 'cardBg'
+                            : isSelected
+                              ? 'highlightYellow'
+                              : 'farmCardBgLight'
+                        }
+                        borderColor={
+                          isDisabled
+                            ? 'borderDefault'
+                            : isSelected
+                              ? 'farmBorder'
+                              : 'farmBorder'
+                        }
                         borderRadius="m"
-                        borderWidth={2}
+                        borderWidth={isSelected ? 3 : 2}
                         height={48}
                         justifyContent="center"
                         opacity={isDisabled ? DISABLED_OPACITY : 1}
@@ -125,7 +148,9 @@ export function CropSelector({
               {/* Footer */}
               <Box alignItems="center" mt="m">
                 <Text color="textSecondary" fontSize={11} textAlign="center">
-                  Tap to plant • Buy more seeds in Shop 🏪
+                  {isContinuousMode
+                    ? `Đã chọn: ${CROPS[selectedCropId].name} • Nhấn ô đất khác để gieo tiếp`
+                    : 'Tap to plant • Buy more seeds in Shop 🏪'}
                 </Text>
               </Box>
             </Card>

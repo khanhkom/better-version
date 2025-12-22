@@ -5,6 +5,7 @@
 
 import type { CropId } from '@/types/game';
 
+import { useFocusEffect } from '@react-navigation/native';
 import { useCallback, useState } from 'react';
 import { SafeAreaView, StatusBar, StyleSheet } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
@@ -32,6 +33,13 @@ export function FarmGameScreen() {
     const activeModal = useGameStore((state) => state.activeModal);
     const [showCropSelector, setShowCropSelector] = useState(false);
     const [selectedPlotId, setSelectedPlotId] = useState<string | undefined>(undefined);
+
+    // Update StatusBar color when screen is focused
+    useFocusEffect(
+        useCallback(() => {
+            StatusBar.setBackgroundColor('#2E7D32');
+        }, [])
+    );
 
     // Initialize game loops
     useGameLoop();

@@ -3,6 +3,8 @@
  * Habit statistics and progress tracking
  */
 
+import { useFocusEffect } from '@react-navigation/native';
+import { useCallback } from 'react';
 import { FlatList, SafeAreaView, StatusBar, StyleSheet } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 
@@ -15,6 +17,13 @@ import { DAYS_OF_WEEK, HabitRow } from '../HabitsScreen/components';
 
 export function StatisticsScreen() {
     const habits = useGameStore((state) => state.habits);
+
+    // Update StatusBar color when screen is focused
+    useFocusEffect(
+        useCallback(() => {
+            StatusBar.setBackgroundColor('#00838F');
+        }, [])
+    );
 
     return (
         <LinearGradient

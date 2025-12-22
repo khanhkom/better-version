@@ -5,7 +5,8 @@
 
 import type { DayOfWeek, Habit } from '@/types/game';
 
-import { useState } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
+import { useCallback, useState } from 'react';
 import { FlatList, SafeAreaView, StatusBar, StyleSheet } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 
@@ -33,6 +34,13 @@ export function HabitsScreen() {
     const [showAddModal, setShowAddModal] = useState(false);
     const [showEditModal, setShowEditModal] = useState(false);
     const [editingHabit, setEditingHabit] = useState<Habit | undefined>(undefined);
+
+    // Update StatusBar color when screen is focused
+    useFocusEffect(
+        useCallback(() => {
+            StatusBar.setBackgroundColor('#6A1B9A');
+        }, [])
+    );
 
     const handlePlant = (habitId: string) => {
         const today = new Date();

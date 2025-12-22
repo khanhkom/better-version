@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "tom_dark@1x.png",
+      "filename" : "AppIcon-40~ipad.png",
       "idiom" : "iphone",
       "scale" : "1x"
     },
     {
-      "filename" : "tom_dark@2x.png",
+      "filename" : "AppIcon-40@2x.png",
       "idiom" : "iphone",
       "scale" : "2x"
     },
     {
-      "filename" : "tom_dark@3x.png",
+      "filename" : "AppIcon-60@2x~car.png",
       "idiom" : "iphone",
       "scale" : "3x"
     }

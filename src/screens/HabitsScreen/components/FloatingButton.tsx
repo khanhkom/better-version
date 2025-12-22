@@ -22,13 +22,13 @@ export function FloatingButton({ onPress }: FloatingButtonProps) {
         >
             <Box
                 alignItems="center"
-                backgroundColor="highlightYellow"
+                backgroundColor="habitProgressFill"
                 borderRadius="full"
                 height={56}
                 justifyContent="center"
                 width={56}
             >
-                <Text color="farmBorderDark" fontSize={24} fontWeight="700">
+                <Text color="white" fontSize={24} fontWeight="700">
                     +
                 </Text>
             </Box>
@@ -38,7 +38,7 @@ export function FloatingButton({ onPress }: FloatingButtonProps) {
 
 const styles = StyleSheet.create({
     container: {
-        bottom: 48,
+        bottom: 24,
         elevation: 8,
         position: 'absolute',
         right: 20,

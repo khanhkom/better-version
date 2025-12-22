@@ -127,7 +127,7 @@ export function HabitsScreen() {
                 {/* Header */}
                 <Box padding="m">
                     <Text color="white" fontSize={24} fontWeight="700" mb="m">
-                        ✅ Nhiệm Vụ
+                        Nhiệm Vụ Hôm Nay
                     </Text>
                 </Box>
 

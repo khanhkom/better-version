@@ -1,12 +1,13 @@
 /**
  * TaskCard Component
  * Displays a task card with icon, difficulty, rewards, and Gieo button
+ * Redesigned with pastel colors, high border radius, and gamification elements
  */
 
 import type { Habit } from '@/types/game';
 
-import { Check } from 'lucide-react-native';
-import { useState } from 'react';
+import { Check, Clock } from 'lucide-react-native';
+import { useEffect, useState } from 'react';
 import { Alert, Pressable, TouchableOpacity } from 'react-native';
 
 import Box from '@/components/atoms/Box';
@@ -29,17 +30,47 @@ const DIFFICULTY_LABELS: Record<string, string> = {
 };
 
 const DIFFICULTY_COLORS: Record<string, keyof typeof import('@/theme/restyle').default.colors> = {
-    easy: 'success',
+    easy: 'habitProgressFill',
     hard: 'danger',
     medium: 'warning',
 };
 
 const PRESSED_OPACITY = 0.7;
 
+// Calculate time remaining until end of day
+const useTimeRemaining = () => {
+    const [timeRemaining, setTimeRemaining] = useState('');
+
+    useEffect(() => {
+        const updateTime = () => {
+            const now = new Date();
+            const endOfDay = new Date();
+            endOfDay.setHours(23, 59, 59, 999);
+            const diff = endOfDay.getTime() - now.getTime();
+
+            const hours = Math.floor(diff / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+
+            setTimeRemaining(`${hours}h ${minutes}m`);
+        };
+
+        updateTime();
+        const interval = setInterval(updateTime, 60_000); // Update every minute
+
+        return () => { clearInterval(interval); };
+    }, []);
+
+    return timeRemaining;
+};
+
 export function TaskCard({ habit, isCompleted = false, onDelete, onEdit, onPlant }: TaskCardProps) {
     const difficultyLabel = DIFFICULTY_LABELS[habit.difficulty] ?? 'VỪA';
     const difficultyColor = DIFFICULTY_COLORS[habit.difficulty] ?? 'warning';
     const [isPressed, setIsPressed] = useState(false);
+    const timeRemaining = useTimeRemaining();
+
+    // Calculate progress (example: based on completion ratio)
+    const progress = isCompleted ? 100 : 0;
 
     const handlePress = () => {
         if (onEdit) {
@@ -68,97 +99,121 @@ export function TaskCard({ habit, isCompleted = false, onDelete, onEdit, onPlant
         }
     };
 
-    const buttonColor = isCompleted ? 'farmBorderDark' : 'success';
-    const buttonText = isCompleted ? 'Xong' : 'Gieo';
-
     return (
-        <Pressable
-            onLongPress={handleLongPress}
-            onPress={handlePress}
-            onPressIn={() => { setIsPressed(true); }}
-            onPressOut={() => { setIsPressed(false); }}
-        >
-            <Box
-                backgroundColor={isCompleted ? 'farmBorder' : 'farmCardBgLight'}
-                borderColor="white"
-                borderRadius="m"
-                borderWidth={2}
-                elevation={2}
-                mb="m"
-                paddingHorizontal="l"
-                paddingVertical="m"
-                shadowColor="black"
-                shadowOffset={{ height: 2, width: 0 }}
-                shadowOpacity={0.1}
-                shadowRadius={4}
-                style={{
-                    alignItems: 'center',
-                    flexDirection: 'row',
-                    gap: 12,
-                    opacity: isPressed ? PRESSED_OPACITY : 1,
-                }}
+        <Box mb="m">
+            {/* Main Card */}
+            <Pressable
+                onLongPress={handleLongPress}
+                onPress={handlePress}
+                onPressIn={() => { setIsPressed(true); }}
+                onPressOut={() => { setIsPressed(false); }}
             >
-                {/* Icon with circular background */}
                 <Box
-                    alignItems="center"
-                    backgroundColor="white"
-                    borderRadius="s"
-                    height={42}
-                    justifyContent="center"
-                    width={42}
+                    backgroundColor="habitBgWhite"
+                    borderColor="habitBorderLight"
+                    borderRadius="xxl"
+                    borderWidth={1}
+                    elevation={2}
+                    paddingHorizontal="l"
+                    paddingVertical="l"
+                    shadowColor="habitTextMuted"
+                    shadowOffset={{ height: 2, width: 0 }}
+                    shadowOpacity={0.08}
+                    shadowRadius={8}
+                    style={{
+                        opacity: isPressed ? PRESSED_OPACITY : 1,
+                    }}
                 >
-                    <Emoji size={18} symbol={habit.icon ?? '📋'} />
-                </Box>
-
-                {/* Content */}
-                <Box flex={1}>
-                    <Text color={isCompleted ? 'textPrimary' : 'farmBorderDark'} fontSize={15} fontWeight="700" marginBottom="xs">
-                        {habit.title}
-                    </Text>
-                    <Box flexDirection="row" gap="s" style={{ alignItems: 'center' }}>
-                        <Text color={difficultyColor} fontSize={11} fontWeight="700">
-                            {difficultyLabel}
-                        </Text>
-                        <Text color="warning" fontSize={11} fontWeight="500">
-                            +{habit.moneyReward} Xu
-                        </Text>
-                        <Text color='breakGreen' fontSize={11} fontWeight="500">
-                            +{habit.xpReward} XP
-                        </Text>
-                    </Box>
-                </Box>
-
-                {/* Gieo/Xong Button */}
-                {isCompleted ? (
-                    <TouchableOpacity disabled onPress={() => { onPlant(habit.id); }}>
+                    <Box flexDirection="row" gap="m" style={{ alignItems: 'flex-start' }}>
+                        {/* Icon with circular gradient background */}
                         <Box
                             alignItems="center"
-                            backgroundColor="success"
-                            borderColor="white"
-                            borderRadius="xl"
-                            borderWidth={2}
+                            backgroundColor="habitBgPastelBlue"
+                            borderRadius="xxl"
+                            height={48}
                             justifyContent="center"
-                            paddingHorizontal="s"
-                            paddingVertical="s"
+                            width={48}
                         >
-                            <Check color="white" size={20} />
+                            <Emoji size={24} symbol={habit.icon ?? '📋'} />
                         </Box>
-                    </TouchableOpacity>
-                ) : (
-                    <Button
-                        backgroundColor={buttonColor}
-                        borderColor="white"
-                        borderRadius="m"
-                        borderWidth={2}
-                        onPress={() => { onPlant(habit.id); }}
-                        paddingHorizontal="l"
-                        paddingVertical="s"
-                        textColor="white"
-                        title={buttonText}
-                    />
-                )}
-            </Box>
-        </Pressable>
+
+                        {/* Content */}
+                        <Box flex={1}>
+                            <Text color="habitTextDark" fontSize={16} fontWeight="700" marginBottom="xs">
+                                {habit.title}
+                            </Text>
+
+                            {/* Tags row */}
+                            <Box flexDirection="row" gap="xs" mb="m" style={{ alignItems: 'center', flexWrap: 'wrap' }}>
+                                <Box
+                                    backgroundColor="habitBgPastelGreen"
+                                    borderRadius="full"
+                                    paddingHorizontal="m"
+                                    paddingVertical="xs"
+                                >
+                                    <Text color={difficultyColor} fontSize={11} fontWeight="700">
+                                        {difficultyLabel}
+                                    </Text>
+                                </Box>
+
+                                <Box flexDirection="row" gap="xs" style={{ alignItems: 'center' }}>
+                                    <Emoji size={14} symbol="💰" />
+                                    <Text color="habitTextMuted" fontSize={12} fontWeight="600">
+                                        +{habit.moneyReward}
+                                    </Text>
+                                </Box>
+                            </Box>
+                            {/* Timer and CTA row */}
+                            <Box flexDirection="row" gap="m" style={{ alignItems: 'center', justifyContent: 'space-between' }}>
+                                {/* Timer */}
+                                <Box flexDirection="row" gap="xs" style={{ alignItems: 'center' }}>
+                                    <Clock color="#78909C" size={14} />
+                                    <Text color="habitTextMuted" fontSize={12} fontWeight="500">
+                                        {timeRemaining}
+                                    </Text>
+                                </Box>
+
+                                {/* CTA Button */}
+                                {isCompleted ? (
+                                    <Box
+                                        alignItems="center"
+                                        backgroundColor="habitProgressFill"
+                                        borderRadius="full"
+                                        flexDirection="row"
+                                        gap="xs"
+                                        justifyContent="center"
+                                        paddingHorizontal="l"
+                                        paddingVertical="s"
+                                    >
+                                        <Check color="white" size={16} />
+                                        <Text color="white" fontSize={13} fontWeight="700">
+                                            Đã xong
+                                        </Text>
+                                    </Box>
+                                ) : (
+                                    <TouchableOpacity onPress={() => { onPlant(habit.id); }}>
+                                        <Box
+                                            alignItems="center"
+                                            backgroundColor="breakGreen"
+                                            borderRadius="full"
+                                            flexDirection="row"
+                                            gap="xs"
+                                            justifyContent="center"
+                                            paddingHorizontal="l"
+                                            paddingVertical="s"
+                                        >
+                                            <Text color="white" fontSize={14} fontWeight="700">
+                                                Claim!
+                                            </Text>
+                                        </Box>
+                                    </TouchableOpacity>
+                                )}
+                            </Box>
+                        </Box>
+                    </Box>
+                </Box>
+            </Pressable>
+        </Box>
     );
 }
 

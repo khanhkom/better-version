@@ -58,6 +58,18 @@ const palette = {
   highlightYellow: '#ffb300',
   storageCyan: '#56ccf2',
 
+  // Pastel habit colors (soft, friendly tones)
+  habitBgPastelBlue: '#E3F2FD',
+  habitBgPastelGreen: '#E8F5E9',
+  habitBgWhite: '#FFFFFF',
+  habitBorderLight: '#E0E0E0',
+  habitGradientEnd: '#90CAF9',
+  habitGradientStart: '#BBDEFB',
+  habitProgressBg: '#E3F2FD',
+  habitProgressFill: '#4FC3F7',
+  habitTextDark: '#37474F',
+  habitTextMuted: '#78909C',
+
   // Crop colors
   cropCarrot: '#ff8c00',
   cropCorn: '#ffeb3b',

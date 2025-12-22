@@ -19,26 +19,34 @@ type HabitRowProps = {
 export function HabitRow({ habit }: HabitRowProps) {
     return (
         <Card
-            backgroundColor="farmCardBgLight"
-            borderColor="farmBorder"
-            borderRadius="m"
-            borderWidth={2}
-            mb="s"
-            padding="m"
+            backgroundColor="statBgWhite"
+            borderColor="statBorderLight"
+            borderRadius="xxl"
+            borderWidth={1}
+            elevation={2}
+            mb="m"
+            padding="l"
+            shadowColor="statTextMuted"
+            shadowOffset={{ height: 2, width: 0 }}
+            shadowOpacity={0.08}
+            shadowRadius={8}
         >
             <Box alignItems="center" flexDirection="row" gap="m">
-                {/* Icon */}
+                {/* Icon with pastel background */}
                 <Box
                     alignItems="center"
+                    backgroundColor="statBgPastelCyan"
+                    borderRadius="xxl"
+                    height={44}
                     justifyContent="center"
-                    width={40}
+                    width={44}
                 >
-                    <Emoji size={28} symbol={habit.icon ?? '📋'} />
+                    <Emoji size={24} symbol={habit.icon ?? '📋'} />
                 </Box>
 
                 {/* Habit Name */}
                 <Box flex={1}>
-                    <Text fontSize={14} fontWeight="700">
+                    <Text color="statTextDark" fontSize={15} fontWeight="700">
                         {habit.title}
                     </Text>
                 </Box>
@@ -51,16 +59,16 @@ export function HabitRow({ habit }: HabitRowProps) {
                 {/* Streak Counter */}
                 <Box
                     alignItems="center"
-                    backgroundColor="highlightYellow"
-                    borderRadius="s"
+                    backgroundColor="statStreakBg"
+                    borderRadius="full"
                     flexDirection="row"
                     gap="xs"
                     justifyContent="center"
-                    paddingHorizontal="s"
+                    paddingHorizontal="m"
                     paddingVertical="xs"
                 >
                     <Emoji size={16} symbol="🔥" />
-                    <Text color="farmBorderDark" fontSize={12} fontWeight="700">
+                    <Text color="statStreakText" fontSize={13} fontWeight="700">
                         {habit.streak}
                     </Text>
                 </Box>

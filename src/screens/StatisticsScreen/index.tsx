@@ -37,8 +37,8 @@ export function StatisticsScreen() {
             <SafeAreaView style={styles.safeArea}>
                 {/* Header */}
                 <Box padding="m">
-                    <Text color="white" fontSize={24} fontWeight="700" mb="m">
-                        📊 Thống Kê
+                    <Text color="statTextDark" fontSize={24} fontWeight="700" mb="m">
+                        Thống Kê
                     </Text>
                 </Box>
 
@@ -46,25 +46,30 @@ export function StatisticsScreen() {
                 <Box flex={1} padding="m">
                     {/* Stats Header */}
                     <Box
-                        backgroundColor="farmBorderDark"
-                        borderRadius='m'
+                        backgroundColor="statBgWhite"
+                        borderRadius='xxl'
+                        elevation={2}
                         flexDirection="row"
                         justifyContent="space-between"
                         marginBottom='m'
                         padding="m"
+                        shadowColor="statTextMuted"
+                        shadowOffset={{ height: 2, width: 0 }}
+                        shadowOpacity={0.08}
+                        shadowRadius={8}
                     >
-                        <Text color="white" fontSize={12} fontWeight="700">
+                        <Text color="statTextDark" fontSize={12} fontWeight="700">
                             THÓI QUEN
                         </Text>
                         <Box alignItems='center' flexDirection="row" gap="xxl">
                             <Box flexDirection="row" gap="xs">
                                 {DAYS_OF_WEEK.map((day) => (
-                                    <Text color="white" fontSize={10} key={day}>
+                                    <Text color="statTextMuted" fontSize={10} fontWeight="600" key={day}>
                                         {day}
                                     </Text>
                                 ))}
                             </Box>
-                            <Text color="white" fontSize={12} fontWeight="700">
+                            <Text color="statTextDark" fontSize={12} fontWeight="700">
                                 CHUỖI
                             </Text>
                         </Box>
@@ -73,7 +78,7 @@ export function StatisticsScreen() {
                     {/* Habit Rows */}
                     {habits.length === 0 ? (
                         <Box alignItems="center" padding="l">
-                            <Text color="farmCardBgLight" fontSize={14} textAlign="center">
+                            <Text color="statTextDark" fontSize={14} textAlign="center">
                                 📋 Chưa có thói quen nào
                             </Text>
                         </Box>

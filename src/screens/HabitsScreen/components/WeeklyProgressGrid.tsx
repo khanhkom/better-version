@@ -56,11 +56,11 @@ export function WeeklyProgressGrid({ completionDates }: WeeklyProgressGridProps)
                 const isCompleted = completedDatesSet.has(date);
                 return (
                     <Box
-                        backgroundColor={isCompleted ? 'success' : 'cardBg'}
-                        borderRadius="xs"
-                        height={12}
+                        backgroundColor={isCompleted ? 'statProgressComplete' : 'statProgressIncomplete'}
+                        borderRadius="s"
+                        height={14}
                         key={date}
-                        width={12}
+                        width={14}
                     />
                 );
             })}

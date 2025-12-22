@@ -70,6 +70,17 @@ const palette = {
   habitTextDark: '#37474F',
   habitTextMuted: '#78909C',
 
+  // Pastel stat colors (soft cyan tones)
+  statBgPastelCyan: '#E0F7FA',
+  statBgWhite: '#FFFFFF',
+  statBorderLight: '#E0E0E0',
+  statProgressComplete: '#26C6DA',
+  statProgressIncomplete: '#E2E2E2',
+  statStreakBg: '#FFF9C4',
+  statStreakText: '#F57F17',
+  statTextDark: '#37474F',
+  statTextMuted: '#78909C',
+
   // Crop colors
   cropCarrot: '#ff8c00',
   cropCorn: '#ffeb3b',

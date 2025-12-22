@@ -428,25 +428,38 @@ export const useGameStore = create<GameStore>()(
 
       // Pomodoro actions
       completePomodoro: () => {
-        const { addMoney, addXP, pomodoro } = get();
+        const { addMoney, addXP, pomodoro, startPomodoro } = get();
 
         // Rewards
         if (pomodoro.mode === 'FOCUS') {
           addXP(POMODORO_REWARDS.FOCUS.xp);
           addMoney(POMODORO_REWARDS.FOCUS.money);
+
+          // Auto-transition to BREAK after FOCUS
+          set((state) => ({
+            pomodoro: {
+              ...state.pomodoro,
+              completedSessions: state.pomodoro.completedSessions + 1,
+            },
+          }));
+
+          // Start break mode
+          startPomodoro('BREAK');
         } else if (pomodoro.mode === 'BREAK') {
           addXP(POMODORO_REWARDS.BREAK.xp);
           addMoney(POMODORO_REWARDS.BREAK.money);
-        }
 
-        set((state) => ({
-          pomodoro: {
-            ...state.pomodoro,
-            completedSessions: state.pomodoro.completedSessions + 1,
-            isRunning: false,
-            remaining: 0,
-          },
-        }));
+          // After BREAK, go back to IDLE
+          set((state) => ({
+            pomodoro: {
+              ...state.pomodoro,
+              completedSessions: state.pomodoro.completedSessions + 1,
+            },
+          }));
+
+          // Start next focus session
+          startPomodoro('FOCUS');
+        }
       },
 
       pausePomodoro: () => {

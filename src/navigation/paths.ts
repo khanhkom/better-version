@@ -5,4 +5,5 @@ export const enum Paths {
   MainTabs = 'mainTabs',
   ProfileExample = 'profileExample',
   Startup = 'startup',
+  Statistics = 'statistics',
 }

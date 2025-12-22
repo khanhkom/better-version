@@ -16,6 +16,7 @@ export const homeImages = {
   icFarm: require('./home/ic_farm.png') as ImageSourcePropType,
   icHome: require('./home/ic_home.png') as ImageSourcePropType,
   icMission: require('./home/ic_mission.png') as ImageSourcePropType,
+  icStatistic: require('./home/ic_statistic.png') as ImageSourcePropType,
 } as const;
 
 // Export all images

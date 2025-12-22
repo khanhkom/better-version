@@ -81,11 +81,11 @@ export function FarmGameScreen() {
 
     return (
         <LinearGradient
-            colors={['#66bb6a', '#66bb6a']}
+            colors={['#66BB6A', '#388E3C']}
             style={styles.container}
         >
             <StatusBar
-                backgroundColor="#66bb6a"
+                backgroundColor="#2E7D32"
                 barStyle="light-content"
             />
             <SafeAreaView style={styles.safeArea}>
@@ -96,7 +96,7 @@ export function FarmGameScreen() {
                 />
 
                 {/* Farm Grid with Expansion Area */}
-                <Box backgroundColor="breakGreen" flex={1} position="relative">
+                <Box flex={1} position="relative">
                     <FarmGrid
                         onExpansionPress={handleExpansionPress}
                         onPlotPress={handlePlotPress}

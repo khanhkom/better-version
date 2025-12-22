@@ -5,6 +5,7 @@ import type { StackScreenProps } from '@react-navigation/stack';
 export type MainTabParamList = {
   [Paths.FarmGame]: undefined;
   [Paths.Habits]: undefined;
+  [Paths.Statistics]: undefined;
 };
 
 export type MainTabScreenProps<

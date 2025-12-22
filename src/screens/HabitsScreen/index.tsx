@@ -1,6 +1,6 @@
 /**
  * HabitsScreen
- * Habit tracking screen with tabs for Tasks, Statistics, and Add
+ * Habit tracking screen for daily tasks
  */
 
 import type { DayOfWeek, Habit } from '@/types/game';
@@ -17,12 +17,8 @@ import { useGameStore } from '@/stores/gameStore';
 
 import {
     AddHabitForm,
-    DAYS_OF_WEEK,
     EditHabitForm,
     FloatingButton,
-    HabitRow,
-    TabNavigation,
-    type TabType,
     TaskCard,
 } from './components';
 
@@ -34,7 +30,6 @@ export function HabitsScreen() {
     const updateHabit = useGameStore((state) => state.updateHabit);
     const addMoney = useGameStore((state) => state.addMoney);
 
-    const [activeTab, setActiveTab] = useState<TabType>('tasks');
     const [showAddModal, setShowAddModal] = useState(false);
     const [showEditModal, setShowEditModal] = useState(false);
     const [editingHabit, setEditingHabit] = useState<Habit | undefined>(undefined);
@@ -111,117 +106,58 @@ export function HabitsScreen() {
         setShowAddModal(false);
     };
 
-    const renderContent = () => {
-        switch (activeTab) {
-            case 'statistics': {
-                return (
-                    <Box flex={1}>
-                        {/* Header */}
-                        <Box
-                            backgroundColor="farmBorderDark"
-                            borderRadius='m'
-                            flexDirection="row"
-                            justifyContent="space-between"
-                            marginBottom='m'
-                            padding="m"
-                        >
-                            <Text color="white" fontSize={12} fontWeight="700">
-                                THÓI QUEN
-                            </Text>
-                            <Box alignItems='center' flexDirection="row" gap="xxl">
-                                <Box flexDirection="row" gap="xs">
-                                    {DAYS_OF_WEEK.map((day) => (
-                                        <Text color="white" fontSize={10} key={day}>
-                                            {day}
-                                        </Text>
-                                    ))}
-                                </Box>
-                                <Text color="white" fontSize={12} fontWeight="700">
-                                    CHUỖI
-                                </Text>
-                            </Box>
-                        </Box>
-
-                        {/* Habit Rows */}
-                        {habits.length === 0 ? (
-                            <Box alignItems="center" padding="l">
-                                <Text color="farmCardBgLight" fontSize={14} textAlign="center">
-                                    📋 Chưa có thói quen nào
-                                </Text>
-                            </Box>
-                        ) : (
-                            <FlatList
-                                data={habits}
-                                keyExtractor={(item) => item.id}
-                                renderItem={({ item }) => <HabitRow habit={item} />}
-                                showsVerticalScrollIndicator={false}
-                            />
-                        )}
-                    </Box>
-                );
-            }
-
-            case 'tasks': {
-                return (
-                    <Box flex={1}>
-                        {habits.length === 0 ? (
-                            <Box alignItems="center" padding="l">
-                                <Text color="farmCardBgLight" fontSize={14} textAlign="center">
-                                    📋 Chưa có nhiệm vụ nào
-                                </Text>
-                                <Text color="farmCardBgLight" fontSize={11} mt="xs" textAlign="center">
-                                    Thêm nhiệm vụ để kiếm XP và phát triển nông trại
-                                </Text>
-                            </Box>
-                        ) : (
-                            <FlatList
-                                data={habits}
-                                keyExtractor={(item) => item.id}
-                                renderItem={({ item }) => {
-                                    // Check if completed today
-                                    const today = new Date();
-                                    today.setHours(0, 0, 0, 0);
-                                    const todayTimestamp = today.getTime();
-                                    const isCompleted = item.completionDates.includes(todayTimestamp);
-
-                                    return (
-                                        <TaskCard
-                                            habit={item}
-                                            isCompleted={isCompleted}
-                                            onDelete={handleDelete}
-                                            onEdit={handleEdit}
-                                            onPlant={handlePlant}
-                                        />
-                                    );
-                                }}
-                                showsVerticalScrollIndicator={false}
-                            />
-                        )}
-                    </Box>
-                );
-            }
-
-            default: {
-                return undefined;
-            }
-        }
-    };
-
     return (
         <LinearGradient
-            colors={['#5B7DCA', '#4A90E2']}
+            colors={['#AB47BC', '#7B1FA2']}
             style={styles.container}
         >
             <StatusBar
-                backgroundColor="#4A6FA5"
+                backgroundColor="#6A1B9A"
                 barStyle="light-content"
             />
             <SafeAreaView style={styles.safeArea}>
-                {/* Header with Tabs and Close Button */}
-                <TabNavigation activeTab={activeTab} onTabChange={setActiveTab} />
+                {/* Header */}
+                <Box padding="m">
+                    <Text color="white" fontSize={24} fontWeight="700" mb="m">
+                        ✅ Nhiệm Vụ
+                    </Text>
+                </Box>
+
                 {/* Content */}
                 <Box flex={1} padding="m">
-                    {renderContent()}
+                    {habits.length === 0 ? (
+                        <Box alignItems="center" padding="l">
+                            <Text color="farmCardBgLight" fontSize={14} textAlign="center">
+                                📋 Chưa có nhiệm vụ nào
+                            </Text>
+                            <Text color="farmCardBgLight" fontSize={11} mt="xs" textAlign="center">
+                                Thêm nhiệm vụ để kiếm XP và phát triển nông trại
+                            </Text>
+                        </Box>
+                    ) : (
+                        <FlatList
+                            data={habits}
+                            keyExtractor={(item) => item.id}
+                            renderItem={({ item }) => {
+                                // Check if completed today
+                                const today = new Date();
+                                today.setHours(0, 0, 0, 0);
+                                const todayTimestamp = today.getTime();
+                                const isCompleted = item.completionDates.includes(todayTimestamp);
+
+                                return (
+                                    <TaskCard
+                                        habit={item}
+                                        isCompleted={isCompleted}
+                                        onDelete={handleDelete}
+                                        onEdit={handleEdit}
+                                        onPlant={handlePlant}
+                                    />
+                                );
+                            }}
+                            showsVerticalScrollIndicator={false}
+                        />
+                    )}
                 </Box>
 
                 {/* Floating Add Button */}

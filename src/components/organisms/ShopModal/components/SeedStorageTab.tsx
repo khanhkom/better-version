@@ -30,10 +30,10 @@ export function SeedStorageTab({ inventory }: SeedStorageTabProps) {
   if (ownedSeeds.length === 0) {
     return (
       <Box alignItems="center" padding="l">
-        <Text color="textSecondary" fontSize={14} textAlign="center">
+        <Text color="textMuted" fontSize={14} textAlign="center">
           🌾 No seeds in storage
         </Text>
-        <Text color="textSecondary" fontSize={11} mt="xs" textAlign="center">
+        <Text color="textMuted" fontSize={11} mt="xs" textAlign="center">
           Buy seeds from the Seeds tab
         </Text>
       </Box>
@@ -81,7 +81,7 @@ export function SeedStorageTab({ inventory }: SeedStorageTabProps) {
                   position="relative"
                   width={56}
                 >
-                  <Emoji size={40} symbol={crop.icon} />
+                  <Emoji size={32} symbol={crop.icon} />
                   {inventory[crop.id] > 0 && (
                     <Box
                       alignItems="center"
@@ -107,20 +107,18 @@ export function SeedStorageTab({ inventory }: SeedStorageTabProps) {
       </ScrollView>
 
       {/* Selected Item Details */}
-      {selectedCrop ? <Box
-
-      >
-        <Text fontSize={16} fontWeight="700" mb="s">
+      {selectedCrop ? <Box>
+        <Text color="textMuted" fontSize={16} fontWeight="700" mb="s">
           {selectedCrop.name}
         </Text>
         <Box gap="xs">
-          <Text color="textSecondary" fontSize={12}>
+          <Text color="textMuted" fontSize={12}>
             Số lượng: <Text color="success" fontWeight="700">{count}</Text> hạt giống
           </Text>
-          <Text color="textSecondary" fontSize={12}>
+          <Text color="textMuted" fontSize={12}>
             Thời gian trồng: <Text fontWeight="700">{Math.floor(selectedCrop.growthTime / SECONDS_PER_HOUR)}h</Text>
           </Text>
-          <Text color="textSecondary" fontSize={12}>
+          <Text color="textMuted" fontSize={12}>
             Cấp độ: <Text fontWeight="700">{selectedCrop.level}</Text>
           </Text>
         </Box>

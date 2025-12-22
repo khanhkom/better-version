@@ -141,16 +141,19 @@ export function QuantityModal({
             <Box flexDirection="row" gap="m">
               <Box flex={1}>
                 <Button
+                  borderRadius="s"
                   onPress={handleConfirm}
-                  title="Mua xu"
-                  variant="primary"
+                  paddingHorizontal='l'
+                  title="Mua lượng"
+                  variant='outlined'
                 />
               </Box>
               <Box flex={1}>
                 <Button
+                  borderRadius="s"
                   onPress={handleConfirm}
-                  title="Mua lượng"
-                  variant="primary"
+                  title="Mua xu"
+                  variant='outlined'
                 />
               </Box>
             </Box>

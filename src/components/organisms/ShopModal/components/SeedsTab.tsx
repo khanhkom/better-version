@@ -94,7 +94,7 @@ export function SeedsTab({ money, onBuySeed }: SeedsTabProps) {
                   opacity={isAffordable ? 1 : DISABLED_OPACITY}
                   width={56}
                 >
-                  <Emoji size={40} symbol={crop.icon} />
+                  <Emoji size={28} symbol={crop.icon} />
                 </Box>
               </Pressable>
             );

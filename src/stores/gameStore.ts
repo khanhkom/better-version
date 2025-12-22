@@ -22,6 +22,7 @@ import {
   INITIAL_INVENTORY,
   INITIAL_PLAYER_STATS,
   INITIAL_PLOTS,
+  PLOT_BASE_COST,
   POMODORO_DURATIONS,
   POMODORO_REWARDS,
   XP_PER_LEVEL,
@@ -56,6 +57,7 @@ type GameStore = {
   // Farm actions
   harvestCrop: (plotId: string) => boolean;
   plantCrop: (plotId: string, cropId: CropId) => boolean;
+  purchasePlot: () => boolean;
   selectTool: (tool: ToolType) => void;
   updatePlotProgress: (plotId: string, progress: number) => void;
 
@@ -219,6 +221,28 @@ export const useGameStore = create<GameStore>()(
               : p,
           ),
         });
+
+        return true;
+      },
+
+      purchasePlot: () => {
+        const { plots, spendMoney } = get();
+
+        // Calculate cost based on current plot count
+        const plotCost = (plots.length + 1) * PLOT_BASE_COST;
+
+        if (!spendMoney(plotCost)) return false;
+
+        // Create new plot
+        const newPlot: LandPlot = {
+          id: `plot_${plots.length + 1}`,
+          progress: 0,
+          status: 'EMPTY',
+        };
+
+        set((state) => ({
+          plots: [...state.plots, newPlot],
+        }));
 
         return true;
       },

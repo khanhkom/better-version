@@ -34,9 +34,10 @@ type FarmGridProps = {
     readonly onExpansionPress: () => void;
     readonly onPlotPress: (plotId: string) => void;
     readonly plots: readonly LandPlot[];
+    readonly showExpansion?: boolean;
 };
 
-export function FarmGrid({ onExpansionPress, onPlotPress, plots }: FarmGridProps) {
+export function FarmGrid({ onExpansionPress, onPlotPress, plots, showExpansion = true }: FarmGridProps) {
     // Floating animation
     const translateY = useSharedValue(0);
     const rotate = useSharedValue(0);
@@ -76,6 +77,10 @@ export function FarmGrid({ onExpansionPress, onPlotPress, plots }: FarmGridProps
         rows.push(plots.slice(index, index + PLOTS_PER_ROW));
     }
 
+    // Calculate position for expansion area
+    const lastRow = rows.at(-1);
+    const shouldAddExpansionToLastRow = lastRow ? lastRow.length < PLOTS_PER_ROW : false;
+
     return (
         <AnimatedImageBackground
             borderRadius={12}
@@ -92,26 +97,39 @@ export function FarmGrid({ onExpansionPress, onPlotPress, plots }: FarmGridProps
             ]}
         >
             <Box flex={1} padding="m">
-                <Box gap="m">
-                    {rows.map((row) => (
-                        <Box flexDirection="row" gap="s" justifyContent="center" key={row[0]?.id}>
-                            {row.map((plot) => (
-                                <Box height={PLOT_SIZE} key={plot.id} width={PLOT_SIZE}>
-                                    <PlotCard
-                                        onPress={() => { onPlotPress(plot.id); }}
-                                        plot={plot}
-                                        testID={`plot-${plot.id}`}
-                                    />
-                                </Box>
-                            ))}
+                <Box gap="m" paddingLeft='l'>
+                    {rows.map((row, rowIndex) => {
+                        const isLastRow = rowIndex === rows.length - 1;
+                        const showExpansionInRow = isLastRow && shouldAddExpansionToLastRow;
+
+                        return (
+                            <Box flexDirection="row" gap="s" key={row[0]?.id}>
+                                {row.map((plot) => (
+                                    <Box height={PLOT_SIZE} key={plot.id} width={PLOT_SIZE}>
+                                        <PlotCard
+                                            onPress={() => { onPlotPress(plot.id); }}
+                                            plot={plot}
+                                            testID={`plot-${plot.id}`}
+                                        />
+                                    </Box>
+                                ))}
+                                {/* Expansion Area - in the same row as last plot */}
+                                {showExpansion && showExpansionInRow ? (
+                                    <Box height={PLOT_SIZE} width={PLOT_SIZE}>
+                                        <ExpansionArea onPress={onExpansionPress} />
+                                    </Box>
+                                ) : undefined}
+                            </Box>
+                        );
+                    })}
+                    {/* Expansion Area - new row if last row is full */}
+                    {showExpansion && !shouldAddExpansionToLastRow ? (
+                        <Box flexDirection="row" gap="s">
+                            <Box height={PLOT_SIZE} width={PLOT_SIZE}>
+                                <ExpansionArea onPress={onExpansionPress} />
+                            </Box>
                         </Box>
-                    ))}
-                    {/* Expansion Area - Next slot after plots */}
-                    <Box flexDirection="row" gap="s" paddingLeft="xl">
-                        <Box height={PLOT_SIZE} width={PLOT_SIZE}>
-                            <ExpansionArea onPress={onExpansionPress} />
-                        </Box>
-                    </Box>
+                    ) : undefined}
                 </Box>
             </Box>
         </AnimatedImageBackground>

@@ -54,6 +54,9 @@ export const XP_PER_LEVEL = 100;
 /** Initial number of plots */
 export const INITIAL_PLOTS_COUNT = 6;
 
+/** Plot purchase base cost */
+export const PLOT_BASE_COST = 10;
+
 /** Generate initial plots */
 export const INITIAL_PLOTS: LandPlot[] = Array.from(
   { length: INITIAL_PLOTS_COUNT },

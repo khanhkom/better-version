@@ -13,26 +13,33 @@ import LinearGradient from 'react-native-linear-gradient';
 import { useAutoSave, useFarm, useGameLoop, usePomodoroLoop } from '@/hooks';
 
 import Box from '@/components/atoms/Box';
-import Text from '@/components/atoms/Text';
 import { CropSelector } from '@/components/molecules/CropSelector';
 import { PomodoroModal } from '@/components/organisms/PomodoroModal';
 import { ShopModal } from '@/components/organisms/ShopModal';
 
+import { PLOT_BASE_COST } from '@/constants/game';
 import { useGameStore } from '@/stores/gameStore';
 
 import {
     FarmGrid,
     FarmHeader,
     PomodoroMiniTimer,
+    PurchasePlotModal,
 } from './components';
+
+const PLOTS_PER_GRID = 12;
 
 export function FarmGameScreen() {
     const { handlePlantCrop, handlePlotClick, plots } = useFarm();
     const openModal = useGameStore((state) => state.openModal);
     const closeModal = useGameStore((state) => state.closeModal);
     const activeModal = useGameStore((state) => state.activeModal);
+    const money = useGameStore((state) => state.money);
+    const purchasePlot = useGameStore((state) => state.purchasePlot);
     const [showCropSelector, setShowCropSelector] = useState(false);
     const [selectedPlotId, setSelectedPlotId] = useState<string | undefined>(undefined);
+    const [showPurchaseModal, setShowPurchaseModal] = useState(false);
+    const [selectedCropForPlanting, setSelectedCropForPlanting] = useState<CropId | null>(null);
 
     // Update StatusBar color when screen is focused
     useFocusEffect(
@@ -84,8 +91,32 @@ export function FarmGameScreen() {
     }, [openModal]);
 
     const handleExpansionPress = useCallback(() => {
-        // TODO: Handle expansion logic
+        setShowPurchaseModal(true);
     }, []);
+
+    const handleConfirmPurchase = useCallback(() => {
+        const success = purchasePlot();
+        if (success) {
+            setShowPurchaseModal(false);
+        }
+    }, [purchasePlot]);
+
+    const handleClosePurchaseModal = useCallback(() => {
+        setShowPurchaseModal(false);
+    }, []);
+
+    // Split plots into grids of max 12 plots each
+    const farmGrids: typeof plots[] = [];
+    for (let index = 0; index < plots.length; index += PLOTS_PER_GRID) {
+        farmGrids.push(plots.slice(index, index + PLOTS_PER_GRID));
+    }
+
+    // If last grid is full (12 plots), create new empty grid for expansion
+    const lastGrid = farmGrids.at(-1);
+    const isLastGridFull = lastGrid && lastGrid.length === PLOTS_PER_GRID;
+    if (isLastGridFull) {
+        farmGrids.push([]);
+    }
 
     return (
         <LinearGradient
@@ -103,13 +134,21 @@ export function FarmGameScreen() {
                     onStoragePress={handleStoragePress}
                 />
 
-                {/* Farm Grid with Expansion Area */}
-                <Box flex={1} position="relative">
-                    <FarmGrid
-                        onExpansionPress={handleExpansionPress}
-                        onPlotPress={handlePlotPress}
-                        plots={plots}
-                    />
+                {/* Farm Grids with Expansion Area */}
+                <Box flex={1} gap="xxl" >
+                    {farmGrids.map((gridPlots, gridIndex) => {
+                        const isLastGrid = gridIndex === farmGrids.length - 1;
+                        const gridKey = gridPlots[0]?.id ?? `grid-${gridIndex}`;
+                        return (
+                            <FarmGrid
+                                key={gridKey}
+                                onExpansionPress={handleExpansionPress}
+                                onPlotPress={handlePlotPress}
+                                plots={gridPlots}
+                                showExpansion={isLastGrid}
+                            />
+                        );
+                    })}
                 </Box>
                 {/* Mini Timer when Pomodoro is running */}
                 <PomodoroMiniTimer onPress={handlePomodoroPress} />
@@ -129,6 +168,16 @@ export function FarmGameScreen() {
                     onClose={handleCropSelectorClose}
                     onSelect={handleCropSelect}
                     visible={showCropSelector}
+                />
+
+                {/* Purchase Plot Modal */}
+                <PurchasePlotModal
+                    cost={(plots.length + 1) * PLOT_BASE_COST}
+                    currentMoney={money}
+                    onClose={handleClosePurchaseModal}
+                    onConfirm={handleConfirmPurchase}
+                    plotNumber={plots.length + 1}
+                    visible={showPurchaseModal}
                 />
             </SafeAreaView>
         </LinearGradient>

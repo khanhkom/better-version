@@ -12,6 +12,7 @@ import Box from '@/components/atoms/Box';
 import Button from '@/components/atoms/Button';
 import { Emoji } from '@/components/atoms/Emoji';
 import Text from '@/components/atoms/Text';
+import { QuantityModal } from '@/components/organisms/QuantityModal';
 
 import { CROPS } from '@/constants/game';
 
@@ -26,20 +27,36 @@ type SeedsTabProps = {
 export function SeedsTab({ money, onBuySeed }: SeedsTabProps) {
   const crops = Object.values(CROPS);
   const [selectedCrop, setSelectedCrop] = useState<Crop | null>(crops[0] || null);
+  const [showQuantityModal, setShowQuantityModal] = useState(false);
 
   const handleSelectCrop = (crop: Crop) => {
     setSelectedCrop(crop);
   };
 
-  const handleBuy = () => {
+  const handleBuyClick = () => {
     if (selectedCrop && money >= selectedCrop.buyPrice) {
-      onBuySeed(selectedCrop.id);
+      setShowQuantityModal(true);
     }
+  };
+
+  const handleConfirmBuy = (quantity: number) => {
+    if (selectedCrop) {
+      // Call onBuySeed multiple times or update to accept quantity
+      for (let index = 0; index < quantity; index++) {
+        onBuySeed(selectedCrop.id);
+      }
+      setShowQuantityModal(false);
+    }
+  };
+
+  const handleCancelBuy = () => {
+    setShowQuantityModal(false);
   };
 
   const canAfford = selectedCrop ? money >= selectedCrop.buyPrice : false;
   const profit = selectedCrop ? selectedCrop.sellPrice - selectedCrop.buyPrice : 0;
   const growthHours = selectedCrop ? Math.floor(selectedCrop.growthTime / SECONDS_PER_HOUR) : 0;
+  const maxQuantity = selectedCrop ? Math.floor(money / selectedCrop.buyPrice) : 0;
 
   return (
     <Box backgroundColor="farmCardBgLight"
@@ -113,7 +130,7 @@ export function SeedsTab({ money, onBuySeed }: SeedsTabProps) {
           <Button
             borderRadius='s'
             disabled={!canAfford}
-            onPress={handleBuy}
+            onPress={handleBuyClick}
             paddingHorizontal='l'
             paddingVertical='s'
             title="Mua"
@@ -121,6 +138,18 @@ export function SeedsTab({ money, onBuySeed }: SeedsTabProps) {
           />
         </Box>
       </Box> : null}
+
+      {/* Quantity Modal */}
+      {selectedCrop ? (
+        <QuantityModal
+          itemName={selectedCrop.name}
+          maxQuantity={maxQuantity}
+          onCancel={handleCancelBuy}
+          onConfirm={handleConfirmBuy}
+          pricePerUnit={selectedCrop.buyPrice}
+          visible={showQuantityModal}
+        />
+      ) : undefined}
     </Box>
   );
 }

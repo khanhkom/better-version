@@ -12,6 +12,8 @@
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		F571B3882BD7A3F80014213C /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = F571B3872BD7A3F80014213C /* PrivacyInfo.xcprivacy */; };
 		F5DC7AB12D9D8A92004DB744 /* AppDelegade.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5DC7AB02D9D8A92004DB744 /* AppDelegade.swift */; };
+		6C907709DEA2422880C87598 /* BootSplash.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1D8CE58CAD774E57B77AAD45 /* BootSplash.storyboard */; };
+		9266921A2A254795B440EF03 /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AEEB2D9EFA134E2B92FB59BB /* Colors.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -37,6 +39,8 @@
 		F571B3872BD7A3F80014213C /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		F5DC7AB02D9D8A92004DB744 /* AppDelegade.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegade.swift; sourceTree = "<group>"; };
 		F5DC7AB22D9D8AA1004DB744 /* BetterVersion-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BetterVersion-Bridging-Header.h"; sourceTree = "<group>"; };
+		1D8CE58CAD774E57B77AAD45 /* BootSplash.storyboard */ = {isa = PBXFileReference; name = "BootSplash.storyboard"; path = "BetterVersion/BootSplash.storyboard"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		AEEB2D9EFA134E2B92FB59BB /* Colors.xcassets */ = {isa = PBXFileReference; name = "Colors.xcassets"; path = "BetterVersion/Colors.xcassets"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = folder.assetcatalog; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -67,6 +71,8 @@
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
 				F5DC7AB22D9D8AA1004DB744 /* BetterVersion-Bridging-Header.h */,
+				1D8CE58CAD774E57B77AAD45 /* BootSplash.storyboard */,
+				AEEB2D9EFA134E2B92FB59BB /* Colors.xcassets */,
 			);
 			name = BetterVersion;
 			sourceTree = "<group>";
@@ -213,6 +219,8 @@
 				F571B3882BD7A3F80014213C /* PrivacyInfo.xcprivacy in Resources */,
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				6C907709DEA2422880C87598 /* BootSplash.storyboard in Resources */,
+				9266921A2A254795B440EF03 /* Colors.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -6,8 +6,9 @@
 import type { DayOfWeek, Habit } from '@/types/game';
 
 import { useFocusEffect } from '@react-navigation/native';
+import { Plus } from 'lucide-react-native';
 import { useCallback, useState } from 'react';
-import { SafeAreaView, ScrollView, StatusBar, StyleSheet, View } from 'react-native';
+import { SafeAreaView, ScrollView, StatusBar, StyleSheet, TouchableOpacity, View } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Rive, { Fit, RiveGeneralEvent, RNRiveError, RNRiveErrorType, useRive } from 'rive-react-native';
 
@@ -21,7 +22,6 @@ import { useGameStore } from '@/stores/gameStore';
 import {
     AddHabitForm,
     EditHabitForm,
-    FloatingButton,
     TaskCard,
 } from './components';
 
@@ -181,30 +181,56 @@ export function HabitsScreen() {
                                 </Text>
                             </Box>
                         ) : (
-                            habits.map((item) => {
-                                // Check if completed today
-                                const today = new Date();
-                                today.setHours(0, 0, 0, 0);
-                                const todayTimestamp = today.getTime();
-                                const isCompleted = item.completionDates.includes(todayTimestamp);
+                            <>
+                                {habits.map((item) => {
+                                    // Check if completed today
+                                    const today = new Date();
+                                    today.setHours(0, 0, 0, 0);
+                                    const todayTimestamp = today.getTime();
+                                    const isCompleted = item.completionDates.includes(todayTimestamp);
 
-                                return (
-                                    <TaskCard
-                                        habit={item}
-                                        isCompleted={isCompleted}
-                                        key={item.id}
-                                        onDelete={handleDelete}
-                                        onEdit={handleEdit}
-                                        onPlant={handlePlant}
-                                    />
-                                );
-                            })
+                                    return (
+                                        <TaskCard
+                                            habit={item}
+                                            isCompleted={isCompleted}
+                                            key={item.id}
+                                            onDelete={handleDelete}
+                                            onEdit={handleEdit}
+                                            onPlant={handlePlant}
+                                        />
+                                    );
+                                })}
+                            </>
                         )}
+
+                        {/* Glass Add Button */}
+                        <TouchableOpacity
+                            activeOpacity={0.8}
+                            onPress={() => { setShowAddModal(true); }}
+                        >
+                            <Box
+                                alignItems="center"
+                                backgroundColor="habitBgWhite"
+                                borderColor="habitBorderLight"
+                                borderRadius="xl"
+                                borderWidth={2}
+                                flexDirection="row"
+                                gap="s"
+                                justifyContent="center"
+                                marginTop="m"
+                                paddingVertical="l"
+                                style={{
+                                    opacity: 0.8,
+                                }}
+                            >
+                                <Plus color="#4CAF50" size={20} />
+                                <Text color="breakGreen" fontSize={14} fontWeight="600">
+                                    Thêm nhiệm vụ mới
+                                </Text>
+                            </Box>
+                        </TouchableOpacity>
                     </Box>
                 </ScrollView>
-
-                {/* Floating Add Button */}
-                <FloatingButton onPress={() => { setShowAddModal(true); }} />
             </SafeAreaView>
 
             {/* Add Habit Modal */}

@@ -6,6 +6,7 @@
 import type { Theme } from '@/theme/restyle';
 
 import { Pressable } from 'react-native';
+import Rive, { RNRiveError } from 'rive-react-native';
 
 import { usePlayerStats } from '@/hooks';
 
@@ -13,6 +14,7 @@ import Box from '@/components/atoms/Box';
 import ProgressBar from '@/components/atoms/ProgressBar';
 import Text from '@/components/atoms/Text';
 
+import { scaleWidth } from '@/configs/functions';
 import { POMODORO_DURATIONS, XP_PER_LEVEL } from '@/constants/game';
 import { useGameStore } from '@/stores/gameStore';
 
@@ -53,12 +55,25 @@ export function FarmHeader({ onPomodoroPress, onShopPress, onStoragePress }: Far
             <Box alignItems="center" flexDirection="row" gap="m">
                 {/* Avatar placeholder */}
                 <Box
-                    backgroundColor="textMuted"
                     borderRadius="m"
-                    height={80}
+                    height={100}
                     marginRight="m"
-                    width={80}
-                />
+                    width={100}
+                >
+
+                    <Rive
+                        artboardName="character"
+                        autoplay
+                        onError={(riveError: RNRiveError) => {
+                            console.error('Unhandled error', riveError);
+
+                        }}
+                        resourceName="dress_up"
+                        stateMachineName="pose_statement"
+                        style={{ width: scaleWidth(100) }}
+                    // url="https://public.rive.app/community/runtime-files/2195-4346-avatar-pack-use-case.riv"
+                    />
+                </Box>
 
                 {/* Level and Stats */}
                 <Box flex={1}>

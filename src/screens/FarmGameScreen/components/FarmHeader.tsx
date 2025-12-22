@@ -48,7 +48,7 @@ export function FarmHeader({ onPomodoroPress, onShopPress, onStoragePress }: Far
             : formatTime(pomodoro.remaining);
 
     return (
-        <Box backgroundColor="farmBorder" gap="s" padding="m">
+        <Box gap="s" padding="m">
             {/* Level and Progress Row */}
             <Box alignItems="center" flexDirection="row" gap="m">
                 {/* Avatar placeholder */}

@@ -6,43 +6,46 @@
 import type { MainTabParamList } from '@/navigation/types';
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { ClipboardList, Sprout } from 'lucide-react-native';
+import { Image, Text, View } from 'react-native';
 
 import { Paths } from '@/navigation/paths';
 
 import { FarmGameScreen } from '@/screens/FarmGameScreen';
 import { HabitsScreen } from '@/screens/HabitsScreen';
 
+import { images } from '@/assets/images';
+
 const Tab = createBottomTabNavigator<MainTabParamList>();
 
+const ICON_SIZE_DEFAULT = 32;
+const ICON_SIZE_FOCUSED = 36;
+
 type TabBarIconProps = {
-    readonly color: string;
+    readonly focused: boolean;
 };
 
 export function MainTabNavigator() {
     return (
         <Tab.Navigator
             initialRouteName={Paths.FarmGame}
-            screenOptions={{
+            screenOptions={({ route }) => ({
                 headerShown: false,
-                tabBarActiveTintColor: '#4CAF50',
-                tabBarInactiveTintColor: '#757575',
+                tabBarShowLabel: false,
                 tabBarStyle: {
-                    backgroundColor: '#5d4037',
-                    borderTopColor: '#3e2723',
+                    backgroundColor: route.name === Paths.FarmGame ? '#689F38' : '#4A6FA5',
+                    borderTopColor: route.name === Paths.FarmGame ? '#558B2F' : '#3A5A85',
                     borderTopWidth: 2,
-                    height: 60,
-                    paddingBottom: 8,
-                    paddingTop: 8,
+                    height: 70,
+                    paddingBottom: 10,
+                    paddingTop: 6,
                 },
-            }}
+            })}
         >
             <Tab.Screen
                 component={HabitsScreen}
                 name={Paths.Habits}
                 options={{
                     tabBarIcon: HabitsIcon,
-                    tabBarLabel: 'Nhiệm vụ',
                 }}
             />
             <Tab.Screen
@@ -50,18 +53,67 @@ export function MainTabNavigator() {
                 name={Paths.FarmGame}
                 options={{
                     tabBarIcon: FarmIcon,
-                    tabBarLabel: 'Vườn cây',
                 }}
             />
         </Tab.Navigator>
     );
 }
 
-function FarmIcon({ color }: TabBarIconProps) {
-    return <Sprout color={color} size={24} />;
+function FarmIcon({ focused }: TabBarIconProps) {
+    const size = focused ? ICON_SIZE_FOCUSED : ICON_SIZE_DEFAULT;
+    return (
+        <View style={{
+            alignItems: 'center',
+            marginTop: 12
+        }}>
+            <View
+                style={{
+                    alignItems: 'center',
+                    backgroundColor: focused ? 'rgba(255, 255, 255, 0.2)' : 'transparent',
+                    borderRadius: 12,
+                    height: 56,
+                    justifyContent: 'center',
+                    paddingBlock: 8,
+                    width: 56
+                }}
+            >
+                <Image resizeMode="contain" source={images.home.icFarm} style={{ height: size, width: size }} />
+                <Text style={{ color: '#FFFFFF', fontSize: 11, fontWeight: '600', marginTop: 4 }}>
+                    Vườn cây
+                </Text>
+            </View>
+
+        </View>
+    );
 }
 
-function HabitsIcon({ color }: TabBarIconProps) {
-    return <ClipboardList color={color} size={24} />;
+function HabitsIcon({ focused }: TabBarIconProps) {
+    const size = focused ? ICON_SIZE_FOCUSED : ICON_SIZE_DEFAULT;
+    return (
+        <View style={{
+            alignItems: 'center',
+            marginTop: 12
+
+
+        }}>
+            <View
+                style={{
+                    alignItems: 'center',
+                    backgroundColor: focused ? 'rgba(255, 255, 255, 0.2)' : 'transparent',
+                    borderRadius: 12,
+                    height: 56,
+                    justifyContent: 'center',
+                    paddingBlock: 8,
+                    width: 56
+                }}
+            >
+                <Image resizeMode="contain" source={images.home.icMission} style={{ height: size, width: size }} />
+                <Text style={{ color: '#FFFFFF', fontSize: 11, fontWeight: '600', marginTop: 4 }}>
+                    Nhiệm vụ
+                </Text>
+            </View>
+
+        </View>
+    );
 }
 

@@ -209,11 +209,11 @@ export function HabitsScreen() {
 
     return (
         <LinearGradient
-            colors={['#8d6e63', '#8d6e63']}
+            colors={['#5B7DCA', '#4A90E2']}
             style={styles.container}
         >
             <StatusBar
-                backgroundColor="#5d4037"
+                backgroundColor="#4A6FA5"
                 barStyle="light-content"
             />
             <SafeAreaView style={styles.safeArea}>

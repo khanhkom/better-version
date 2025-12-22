@@ -6,7 +6,7 @@
 import type { CropId } from '@/types/game';
 
 import { useCallback, useState } from 'react';
-import { SafeAreaView, StyleSheet } from 'react-native';
+import { SafeAreaView, StatusBar, StyleSheet } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 
 import { useAutoSave, useFarm, useGameLoop, usePomodoroLoop } from '@/hooks';
@@ -81,10 +81,14 @@ export function FarmGameScreen() {
 
     return (
         <LinearGradient
-            colors={['#8d6e63', '#8d6e63']}
+            colors={['#66bb6a', '#66bb6a']}
             style={styles.container}
         >
             <SafeAreaView style={styles.safeArea}>
+                <StatusBar
+                    backgroundColor="#66bb6a"
+                    barStyle="light-content"
+                />
                 <FarmHeader
                     onPomodoroPress={handlePomodoroPress}
                     onShopPress={handleShopPress}

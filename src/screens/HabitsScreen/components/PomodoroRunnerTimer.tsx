@@ -34,14 +34,14 @@ export function PomodoroRunnerTimer({ onPress }: PomodoroRunnerTimerProps) {
         <Pressable onPress={onPress} style={{ marginBottom: scaleHeight(20) }}>
             <Box alignItems="center" marginTop="m" paddingHorizontal="m">
                 {/* Rive Runner Animation */}
-                <View style={{ height: scaleHeight(240), width: scaleWidth(375) }}>
+                {/* <View style={{ height: scaleHeight(240), width: scaleWidth(375) }}>
                     <Rive
                         autoplay
                         fit={Fit.Contain}
                         resourceName="runner"
                         style={{ height: '100%', width: '100%' }}
                     />
-                </View>
+                </View> */}
 
                 {/* Countdown Timer */}
                 <Box alignItems="center" marginTop="s">

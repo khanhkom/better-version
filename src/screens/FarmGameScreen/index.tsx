@@ -23,6 +23,7 @@ import { useGameStore } from '@/stores/gameStore';
 import {
     FarmGrid,
     FarmHeader,
+    FinishPlantingButton,
     PomodoroMiniTimer,
     PurchasePlotModal,
 } from './components';
@@ -79,13 +80,19 @@ export function FarmGameScreen() {
 
             // Enter continuous planting mode
             setSelectedCropForPlanting(cropId);
-            // Keep modal open for continuous planting
+
+            // Close modal to allow planting on other plots
+            setShowCropSelector(false);
         }
     }, [selectedPlotId, handlePlantCrop]);
 
     const handleCropSelectorClose = useCallback(() => {
         setShowCropSelector(false);
         setSelectedPlotId(undefined);
+        setSelectedCropForPlanting(undefined); // Exit continuous mode
+    }, []);
+
+    const handleFinishPlanting = useCallback(() => {
         setSelectedCropForPlanting(undefined); // Exit continuous mode
     }, []);
 
@@ -163,6 +170,12 @@ export function FarmGameScreen() {
                 </Box>
                 {/* Mini Timer when Pomodoro is running */}
                 <PomodoroMiniTimer onPress={handlePomodoroPress} />
+
+                {/* Finish Planting Button when in continuous planting mode */}
+                <FinishPlantingButton
+                    onPress={handleFinishPlanting}
+                    visible={selectedCropForPlanting !== undefined}
+                />
 
                 {/* Modals */}
                 <PomodoroModal

@@ -37,10 +37,8 @@ export function CropSelector({
   const handleSelect = (cropId: CropId) => {
     if (inventory[cropId] > 0) {
       onSelect(cropId);
-      // In continuous mode, keep modal open
-      if (!isContinuousMode) {
-        onClose();
-      }
+      // Don't auto-close modal - let parent component handle closing
+      // (parent will close for continuous mode, keep open otherwise)
     }
   };
 

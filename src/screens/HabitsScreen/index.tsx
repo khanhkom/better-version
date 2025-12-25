@@ -15,6 +15,7 @@ import Rive, { Fit, RiveGeneralEvent, RNRiveError, RNRiveErrorType, useRive } fr
 import Box from '@/components/atoms/Box';
 import Text from '@/components/atoms/Text';
 import { ModalWrapper } from '@/components/organisms/ModalWrapper';
+import { PomodoroModal } from '@/components/organisms/PomodoroModal';
 
 import { scaleHeight, scaleWidth } from '@/configs/functions';
 import { useGameStore } from '@/stores/gameStore';
@@ -22,6 +23,7 @@ import { useGameStore } from '@/stores/gameStore';
 import {
     AddHabitForm,
     EditHabitForm,
+    PomodoroRunnerTimer,
     TaskCard,
 } from './components';
 
@@ -32,6 +34,9 @@ export function HabitsScreen() {
     const deleteHabit = useGameStore((state) => state.deleteHabit);
     const updateHabit = useGameStore((state) => state.updateHabit);
     const addMoney = useGameStore((state) => state.addMoney);
+    const openModal = useGameStore((state) => state.openModal);
+    const closeModal = useGameStore((state) => state.closeModal);
+    const activeModal = useGameStore((state) => state.activeModal);
 
     const [showAddModal, setShowAddModal] = useState(false);
     const [showEditModal, setShowEditModal] = useState(false);
@@ -117,7 +122,11 @@ export function HabitsScreen() {
         });
         setShowAddModal(false);
     };
-    //#0c2606
+
+    const handlePomodoroPress = useCallback(() => {
+        openModal('POMODORO');
+    }, [openModal]);
+
     return (
         <LinearGradient
             colors={['#3e802f', '#3e802f']}
@@ -162,6 +171,10 @@ export function HabitsScreen() {
                         // url="https://public.rive.app/community/runtime-files/2195-4346-avatar-pack-use-case.riv"
                         />
                     </View>
+
+                    {/* Pomodoro Runner Timer */}
+                    <PomodoroRunnerTimer onPress={handlePomodoroPress} />
+
                     {/* Header */}
                     <Box padding="m">
                         <Text color="white" fontSize={24} fontWeight="700" mb="m">
@@ -263,6 +276,12 @@ export function HabitsScreen() {
                     />
                 ) : undefined}
             </ModalWrapper>
+
+            {/* Pomodoro Modal */}
+            <PomodoroModal
+                onClose={closeModal}
+                visible={activeModal === 'POMODORO'}
+            />
         </LinearGradient>
     );
 }
